@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yaashtech | Professional Laptop Repair & Service</title>
+    <style>
+        /* Modern & Clean Tech Theme Styling */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f4f7f6;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Header Navigation */
+        header {
+            background-color: #0f172a;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            font-size: 28px;
+            letter-spacing: 1px;
+            color: #38bdf8;
+        }
+
+        /* Hero Banner Section */
+        .hero {
+            background: linear-gradient(rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.8)), url('https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?q=80&w=1200') no-repeat center center/cover;
+            color: #fff;
+            text-align: center;
+            padding: 80px 20px;
+        }
+
+        .hero h2 {
+            font-size: 36px;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .hero p {
+            font-size: 18px;
+            margin-bottom: 30px;
+            color: #cbd5e1;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Direct Action Buttons */
+        .btn-whatsapp {
+            display: inline-block;
+            background-color: #25d366;
+            color: white;
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
+            margin: 5px;
+        }
+
+        .btn-whatsapp:hover {
+            background-color: #128c7e;
+            transform: translateY(-2px);
+        }
+
+        .btn-maps {
+            display: inline-block;
+            background-color: #ea4335;
+            color: white;
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(234, 67, 53, 0.4);
+            margin: 5px;
+        }
+
+        .btn-maps:hover {
+            background-color: #c5221f;
+            transform: translateY(-2px);
+        }
+
+        /* Main Content Container */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 32px;
+            margin-bottom: 40px;
+            color: #0f172a;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 4px;
+            background-color: #38bdf8;
+            margin: 10px auto 0 auto;
+            border-radius: 2px;
+        }
+
+        /* Quick Info Bar */
+        .info-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            background-color: #fff;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-bottom: 50px;
+            border: 1px solid #e2e8f0;
+            text-align: center;
+        }
+
+        .info-item h4 {
+            color: #0f172a;
+            font-size: 16px;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-item p {
+            color: #64748b;
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        .info-item a {
+            color: #38bdf8;
+            text-decoration: none;
+        }
+
+        /* Address Highlight Box */
+        .address-box {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-bottom: 50px;
+            border: 1px solid #e2e8f0;
+            text-align: center;
+        }
+
+        .address-box p {
+            font-size: 16px;
+            color: #475569;
+            margin-bottom: 20px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Grid Layout for Services */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .service-card {
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            text-align: center;
+            transition: transform 0.3s ease;
+            border: 1px solid #e2e8f0;
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+            border-color: #38bdf8;
+        }
+
+        .service-icon {
+            font-size: 45px;
+            margin-bottom: 15px;
+        }
+
+        .service-card h3 {
+            font-size: 22px;
+            color: #0f172a;
+            margin-bottom: 12px;
+        }
+
+        .service-card p {
+            color: #64748b;
+            font-size: 15px;
+        }
+
+        /* Footer Section */
+        footer {
+            background-color: #0f172a;
+            color: #94a3b8;
+            text-align: center;
+            padding: 40px 20px;
+            font-size: 14px;
+            border-top: 1px solid #1e293b;
+        }
+
+        footer p strong {
+            color: #fff;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .hero h2 { font-size: 28px; }
+            .hero p { font-size: 16px; }
+            .services-grid { grid-template-columns: 1fr; }
+            .info-bar { grid-template-columns: 1fr; gap: 25px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Yaashtech</h1>
+    </header>
+
+    <section class="hero">
+        <h2>Fast, Reliable Laptop Repair & Upgrades</h2>
+        <p>Bringing your slow or broken laptops back to life with expert care.</p>
+        
+        <a href="https://wa.me/919080106508?text=Hi%20Yaashtech,%20I%20want%20to%20book%20a%20laptop%20service." class="btn-whatsapp" target="_blank">
+            Book a Repair via WhatsApp
+        </a>
+        
+        <a href="https://maps.app.goo.gl/fst2opWs4GL17MobA" class="btn-maps" target="_blank">
+            📍 Get Directions on Maps
+        </a>
+    </section>
+
+    <div class="container">
+        
+        <div class="info-bar">
+            <div class="info-item">
+                <h4>⏰ Timing</h4>
+                <p>Morning 9:00 AM to 9:00 PM</p>
+            </div>
+            <div class="info-item">
+                <h4>📞 Mobile</h4>
+                <p><a href="tel:+919080106508">+91 9080106508</a></p>
+            </div>
+            <div class="info-item">
+                <h4>✉️ Email</h4>
+                <p><a href="mailto:udhayam1794@gmail.com">udhayam1794@gmail.com</a></p>
+            </div>
+        </div>
+
+        <h2 class="section-title">Our Location</h2>
+        <div class="address-box">
+            <h3 style="margin-bottom: 10px; color: #0f172a;">Visit Our Service Center</h3>
+            <p><strong>Udhayakumar S</strong><br>
+            Flat No S1, May Flower Apartment, Vgn Avenue, Kumananchavadi,<br>
+            Chennai, TAMIL NADU 600056, India</p>
+            <a href="https://maps.app.goo.gl/fst2opWs4GL17MobA" class="btn-maps" target="_blank" style="font-size: 16px; padding: 12px 25px;">
+                Open Google Maps Directions
+            </a>
+        </div>
+
+        <h2 class="section-title">Our Services</h2>
+        
+        <div class="services-grid">
+            <div class="service-card">
+                <div class="service-icon">⚙️</div>
+                <h3>Hard Disk & SSD Upgrades</h3>
+                <p>Is your laptop running slow? We replace old, slow hard drives with lightning-fast SSDs to boost your speed instantly.</p>
+            </div>
+
+            <div class="service-card">
+                <div class="service-icon">💻</div>
+                <h3>OS Installation & Formatting</h3>
+                <p>Clean, fresh installation of Windows or Mac OS to fix system crashes, virus issues, and blue screens smoothly.</p>
+            </div>
+
+            <div class="service-card">
+                <div class="service-icon">🧼</div>
+                <h3>Deep Cleaning & Servicing</h3>
+                <p>Internal dust removal, thorough fan cleaning, and premium thermal paste replacement to stop laptop overheating.</p>
+            </div>
+        </div>
+
+        <div style="text-align: center; background-color: #fff; padding: 40px; border-radius: 12px; border: 1px dashed #cbd5e1;">
+            <h3 style="margin-bottom: 15px; color: #0f172a;">Need a Quick Quote for your Laptop?</h3>
+            <p style="margin-bottom: 20px; color: #64748b;">Get in touch with us directly. Most repairs are done within 24 to 48 hours!</p>
+            <a href="https://wa.me/919080106508?text=Hi%20Yaashtech,%20I%20want%20to%20get%20a%20quote%20for%20a%20laptop%20repair." class="btn-whatsapp" target="_blank">
+                💬 Chat for a Free Quote
+            </a>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 <strong>Yaashtech</strong>. All Rights Reserved.</p>
+        <p style="margin-top: 5px; font-size: 12px; color: #64748b;">Quality Laptop Servicing & Support</p>
+    </footer>
+
+</body>
+</html>
