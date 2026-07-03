@@ -1,34 +1,45 @@
 let qrContainer = document.getElementById("qrcode");
-let qrCodeStylingInstance = null;
-let qrHistory = JSON.parse(localStorage.getItem("yaashtech_enterprise_history")) || [];
-let activeRecordId = null; 
+let qrCodeInstance = null;
+let qrHistory = JSON.parse(localStorage.getItem("yaashtech_clean_history")) || [];
+let editingRecordId = null;
 
-// Initial configurations initialization boots
-function initEngine() {
-    // Inject default parameters if fields display clean
-    qrCodeStylingInstance = new QRCodeStyling({
-        width: 280,
-        height: 280,
-        type: "canvas",
-        data: "https://yaashtech.in",
-        margin: 0, // Borderless locally; canvas injection maps borders at download runtime
-        qrOptions: { typeNumber: "0", mode: "Byte", errorCorrectionLevel: "M" },
-        dotsOptions: { color: "#000000", type: "square" },
-        backgroundOptions: { color: "#ffffff" },
-        imageOptions: { crossOrigin: "anonymous", hideBackgroundDots: true, imageSize: 0.4, margin: 4 }
-    });
-    
+// Real-time compilation script engine
+function generateQRCode() {
+    const name = document.getElementById('name').value;
+    const title = document.getElementById('title').value;
+    const company = document.getElementById('company').value;
+    const rawPhone1 = document.getElementById('phone1').value;
+    const rawPhone2 = document.getElementById('phone2').value;
+    const email1 = document.getElementById('email1').value;
+    const email2 = document.getElementById('email2').value;
+    const website = document.getElementById('website').value;
+    const address = document.getElementById('address').value;
+    const pincode = document.getElementById('pincode').value;
+
+    const phone1 = formatCountryCode(rawPhone1);
+    const phone2 = formatCountryCode(rawPhone2);
+
+    let finalPayload = "";
+    if (name || phone1) {
+        // High-capacity vCard string matching standard multi-line protocols
+        finalPayload = `BEGIN:VCARD\nVERSION:3.0\nN:${name};;;;\nFN:${name}\nORG:${company}\nTITLE:${title}\nTEL;TYPE=CELL,VOICE:${phone1}\nTEL;TYPE=WORK,FAX:${phone2}\nEMAIL;TYPE=PREF,INTERNET:${email1}\nEMAIL;TYPE=WORK,INTERNET:${email2}\nURL:${website}\nADR;TYPE=WORK:;;${address};;;${pincode};India\nEND:VCARD`;
+    }
+
+    document.getElementById('rawPayload').value = finalPayload;
     qrContainer.innerHTML = "";
-    qrCodeStylingInstance.append(qrContainer);
-    
-    // Bind change input tracking triggers
-    document.querySelectorAll('.qr-input').forEach(input => {
-        input.addEventListener('input', updateQrPayloadDataMatrix);
-    });
 
-    renderHistoryView();
+    // 300x300 density matrix layout with Level M redundancy lets long details scan instantly
+    qrCodeInstance = new QRCode(qrContainer, {
+        text: finalPayload || "Yaashtech Engine Waiting...",
+        width: 300,
+        height: 300,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.M
+    });
 }
 
+// Automatically prepends the international country prefix (+91)
 function formatCountryCode(numberString) {
     let cleanDigits = numberString.replace(/[^0-9+]/g, ''); 
     if (!cleanDigits) return "";
@@ -38,257 +49,239 @@ function formatCountryCode(numberString) {
     return cleanDigits;
 }
 
-function compilePayload() {
-    const text = document.getElementById('qrText').value || "https://yaashtech.in";
-    const phone = formatCountryCode(document.getElementById('qrPhone').value);
-    const email = document.getElementById('qrEmail').value;
-    const password = document.getElementById('qrPassword').value;
-    const expiry = document.getElementById('expiryDate').value;
+// Saves data entries or applies dynamic click updates to history rows
+function saveRecordToHistory() {
+    const nameLabel = document.getElementById('name').value || "Blank Profile";
+    const companyLabel = document.getElementById('company').value || "vCard Contact File";
+    const payloadDataStr = document.getElementById('rawPayload').value;
 
-    // Automated checking framework validation for system security parameters logs
-    if (expiry) {
-        const today = new Date().toISOString().split('T')[0];
-        if (today > expiry) {
-            return "ERROR: CODE_EXPIRED_ACCESS_DENIED";
-        }
+    if (!payloadDataStr) {
+        alert("Please input data details before tracking.");
+        return;
     }
 
-    // Encapsulate structural text array payload parameters
-    let multiDataBlock = {
-        url: text,
-        whatsapp: phone || "None Linked",
-        email: email || "None Linked",
-        secured: password ? "YES (Verification Pin Active)" : "NO"
-    };
-
-    return JSON.stringify(multiDataBlock, null, 2);
-}
-
-function updateQrPayloadDataMatrix() {
-    const finalPayloadText = compilePayload();
-    const dotsColor = document.getElementById('dotColor').value || "#000000";
-    const dotsPattern = document.getElementById('dotType').value || "square";
-    const errorLevelSetting = document.getElementById('errorLevel').value || "M";
-    const customLogoUrl = document.getElementById('logoUrl').value || "logo.png"; // Falls back to default logo if clean
-
-    // Dynamic Live Editing Engine Update Parameter Configurations
-    qrCodeStylingInstance.update({
-        data: finalPayloadText,
-        qrOptions: { errorCorrectionLevel: errorLevelSetting },
-        dotsOptions: { color: dotsColor, type: dotsPattern },
-        image: finalPayloadText === "ERROR: CODE_EXPIRED_ACCESS_DENIED" ? "" : customLogoUrl
-    });
-
-    // Simulated Scanning Analytics Processor Logger
-    const statusBox = document.getElementById('statusIndicator');
-    if (finalPayloadText === "ERROR: CODE_EXPIRED_ACCESS_DENIED") {
-        statusBox.innerText = "🛑 System Alert: Expiry Lock Enabled";
-        statusBox.className = "mt-4 text-xs font-bold px-3 py-1 rounded-full bg-red-950/50 text-red-400 border border-red-900";
-    } else {
-        // Analytics calculations: count payload bytes length dynamically to display scan load efficiency
-        const byteCount = new Blob([finalPayloadText]).size;
-        statusBox.innerText = `🟢 Dynamic Sync Live (${byteCount} Bytes) | Scans Tracked: ${Math.floor(Math.random() * 12) + 1}`;
-        statusBox.className = "mt-4 text-xs font-bold px-3 py-1 rounded-full bg-emerald-950/50 text-emerald-400 border border-emerald-900";
-    }
-}
-
-function commitRecordToDatabase() {
-    const currentPayloadText = compilePayload();
-    const textLabel = document.getElementById('qrText').value || "Default Hub Target";
-    
-    if (activeRecordId !== null) {
-        // Dynamic QR post-creation edit modifier updates existing items arrays index elements
+    if (editingRecordId !== null) {
+        // History editing: update details of an existing index row without duplicating it
         qrHistory = qrHistory.map(record => {
-            if (record.id === activeRecordId) {
+            if (record.id === editingRecordId) {
                 return {
                     ...record,
-                    title: textLabel,
-                    payload: currentPayloadText,
-                    styles: {
-                        color: document.getElementById('dotColor').value,
-                        type: document.getElementById('dotType').value,
-                        logo: document.getElementById('logoUrl').value
-                    },
-                    timestamp: "Modified: " + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                    title: nameLabel,
+                    desc: companyLabel,
+                    payload: payloadDataStr,
+                    timestamp: "Updated: " + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
                 };
             }
             return record;
         });
-        activeRecordId = null;
-        document.getElementById('saveHistoryBtn').innerText = "💾 Commit to History";
+        editingRecordId = null;
+        document.getElementById('logRecordBtn').innerText = "💾 Save to History";
     } else {
-        // Log clean dataset record item maps
-        const newRecordObject = {
+        // Create fresh index dataset element
+        const newRecordObj = {
             id: Date.now(),
-            title: textLabel,
-            payload: currentPayloadText,
-            styles: {
-                color: document.getElementById('dotColor').value,
-                type: document.getElementById('dotType').value,
-                logo: document.getElementById('logoUrl').value
-            },
+            title: nameLabel,
+            desc: companyLabel,
+            payload: payloadDataStr,
             timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         };
-        qrHistory.unshift(newRecordObject);
+        qrHistory.unshift(newRecordObj);
     }
 
-    localStorage.setItem("yaashtech_enterprise_history", JSON.stringify(qrHistory));
+    localStorage.setItem("yaashtech_clean_history", JSON.stringify(qrHistory));
     renderHistoryView();
-    resetFieldsFormClean();
+    clearFormFields();
 }
 
 function renderHistoryView() {
-    const listViewerContainer = document.getElementById('historyLogList');
-    listViewerContainer.innerHTML = "";
+    const viewportList = document.getElementById('historyLogList');
+    viewportList.innerHTML = "";
 
     if (qrHistory.length === 0) {
-        listViewerContainer.innerHTML = `<div class="text-center py-8 text-zinc-600 text-xs italic">Enterprise database log sheet empty.</div>`;
+        viewportList.innerHTML = `<div class="text-center py-10 text-zinc-600 text-xs italic">No saved history elements.</div>`;
         return;
     }
 
     qrHistory.forEach(record => {
-        const rowItemCard = document.createElement('div');
-        rowItemCard.className = "bg-black border border-zinc-900 rounded-xl p-3 flex flex-col justify-between hover:border-[#00dcff] transition-all relative group";
-        rowItemCard.innerHTML = `
-            <div class="pr-10 cursor-pointer" onclick="restoreHistoricalRecordIntoMemory(${record.id})">
-                <div class="flex items-center gap-1.5 mb-1">
-                    <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-zinc-900 text-[#00dcff]">DYNAMIC MATRIX</span>
+        const logCard = document.createElement('div');
+        logCard.className = "bg-black border border-zinc-900 rounded-xl p-3.5 flex flex-col justify-between hover:border-[#00dcff] transition-all relative group";
+        logCard.innerHTML = `
+            <div class="pr-12 cursor-pointer" onclick="loadPayloadBackToForm(${record.id})">
+                <div class="flex items-center gap-2 mb-1">
+                    <span class="text-[10px] font-bold uppercase px-1.5 py-0.5 rounded bg-zinc-900 text-[#00dcff]">vCard</span>
                     <span class="text-zinc-500 text-[10px] font-medium ml-auto">${record.timestamp}</span>
                 </div>
                 <h4 class="text-white text-xs font-bold truncate">${record.title}</h4>
-                <p class="text-[11px] text-[#00dcff] font-bold mt-1 opacity-0 group-hover:opacity-100 transition-opacity">✏️ Click to Modify Dynamic Parameters</p>
+                <p class="text-zinc-400 text-[11px] truncate mt-0.5">${record.desc}</p>
+                <p class="text-[10px] text-[#00dcff] font-bold mt-2 opacity-0 group-hover:opacity-100 transition-opacity">✏️ Click to Edit/Restore</p>
             </div>
-            <button onclick="purgeSingleIndexEntry(${record.id}); event.stopPropagation();" class="absolute top-3 right-3 text-zinc-600 hover:text-red-400 font-bold text-xs cursor-pointer">✕</button>
+            <button onclick="deleteSingleRecord(${record.id}); event.stopPropagation();" class="absolute top-3.5 right-3 text-zinc-600 hover:text-red-400 text-md transition-colors cursor-pointer">✕</button>
         `;
-        listViewerContainer.appendChild(rowItemCard);
+        viewportList.appendChild(logCard);
     });
 }
 
-window.restoreHistoricalRecordIntoMemory = function(recordId) {
-    const targetObj = qrHistory.find(item => item.id === recordId);
-    if (!targetObj) return;
+// Restore logs: re-uploads dynamic payload metrics back into empty entry boxes for updates
+window.loadPayloadBackToForm = function(recordId) {
+    const record = qrHistory.find(item => item.id === recordId);
+    if (!record) return;
 
-    activeRecordId = targetObj.id;
-    document.getElementById('saveHistoryBtn').innerText = "🔄 Update Live QR";
+    editingRecordId = record.id;
+    document.getElementById('logRecordBtn').innerText = "🔄 Update Entry";
+    
+    const payload = record.payload;
 
-    // Unpack data blocks strings variables values back to forms elements grids
-    try {
-        const parsed = JSON.parse(targetObj.payload);
-        document.getElementById('qrText').value = parsed.url || "";
-        document.getElementById('qrPhone').value = parsed.whatsapp !== "None Linked" ? parsed.whatsapp : "";
-        document.getElementById('qrEmail').value = parsed.email !== "None Linked" ? parsed.email : "";
-    } catch(e) {
-        document.getElementById('qrText').value = targetObj.title;
+    // Parse data strings regex values back to form views
+    const nameM = payload.match(/FN:(.*?)\n/);
+    const orgM = payload.match(/ORG:(.*?)\n/);
+    const titleM = payload.match(/TITLE:(.*?)\n/);
+    const tel1M = payload.match(/TEL;TYPE=CELL,VOICE:(.*?)\n/);
+    const tel2M = payload.match(/TEL;TYPE=WORK,FAX:(.*?)\n/);
+    const em1M = payload.match(/EMAIL;TYPE=PREF,INTERNET:(.*?)\n/);
+    const em2M = payload.match(/EMAIL;TYPE=WORK,INTERNET:(.*?)\n/);
+    const webM = payload.match(/URL:(.*?)\n/);
+    const adrM = payload.match(/ADR;TYPE=WORK:;;(.*?);;;(.*?);India/);
+
+    document.getElementById('name').value = nameM ? nameM[1] : "";
+    document.getElementById('title').value = titleM ? titleM[1] : "";
+    document.getElementById('company').value = orgM ? orgM[1] : "";
+    document.getElementById('phone1').value = tel1M ? tel1M[1] : "";
+    document.getElementById('phone2').value = tel2M ? tel2M[1] : "";
+    document.getElementById('email1').value = em1M ? em1M[1] : "";
+    document.getElementById('email2').value = em2M ? em2M[1] : "";
+    document.getElementById('website').value = webM ? webM[1] : "";
+    if (adrM) {
+        document.getElementById('address').value = adrM[1];
+        document.getElementById('pincode').value = adrM[2];
+    } else {
+        document.getElementById('address').value = "";
+        document.getElementById('pincode').value = "";
     }
 
-    // Unpack styling profiles definitions keys back to visual inputs boxes
-    if (targetObj.styles) {
-        document.getElementById('dotColor').value = targetObj.styles.color || "#000000";
-        document.getElementById('dotType').value = targetObj.styles.type || "square";
-        document.getElementById('logoUrl').value = targetObj.styles.logo || "";
-    }
-
-    updateQrPayloadDataMatrix();
+    document.getElementById('rawPayload').value = payload;
+    qrContainer.innerHTML = "";
+    qrCodeInstance = new QRCode(qrContainer, {
+        text: payload,
+        width: 300,
+        height: 300,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.M
+    });
 };
 
-window.purgeSingleIndexEntry = function(recordId) {
+window.deleteSingleRecord = function(recordId) {
     qrHistory = qrHistory.filter(item => item.id !== recordId);
-    localStorage.setItem("yaashtech_enterprise_history", JSON.stringify(qrHistory));
+    localStorage.setItem("yaashtech_clean_history", JSON.stringify(qrHistory));
     renderHistoryView();
-    if (activeRecordId === recordId) resetFieldsFormClean();
+    if (editingRecordId === recordId) clearFormFields();
 };
 
-function resetFieldsFormClean() {
-    activeRecordId = null;
-    document.getElementById('qrText').value = "";
-    document.getElementById('qrPhone').value = "";
-    document.getElementById('qrEmail').value = "";
-    document.getElementById('qrPassword').value = "";
-    document.getElementById('expiryDate').value = "";
-    document.getElementById('saveHistoryBtn').innerText = "💾 Commit to History";
-    updateQrPayloadDataMatrix();
+function clearFormFields() {
+    editingRecordId = null;
+    document.getElementById('name').value = "";
+    document.getElementById('title').value = "";
+    document.getElementById('company').value = "";
+    document.getElementById('phone1').value = "";
+    document.getElementById('phone2').value = "";
+    document.getElementById('email1').value = "";
+    document.getElementById('email2').value = "";
+    document.getElementById('website').value = "";
+    document.getElementById('address').value = "";
+    document.getElementById('pincode').value = "";
+    document.getElementById('logRecordBtn').innerText = "💾 Save to History";
+    generateQRCode();
 }
 
-// 📤 BACKUP LOGS UTILITY ENGINE: Packs operational database maps into downloadable JSON tracker records files
+document.getElementById('clearHistoryBtn').addEventListener('click', () => {
+    if (confirm("Permanently wipe your local logs database history?")) {
+        qrHistory = [];
+        localStorage.removeItem("yaashtech_clean_history");
+        renderHistoryView();
+        clearFormFields();
+    }
+});
+
+// 📤 Export database text logs to standalone backup file download
 document.getElementById('exportDatabaseBtn').addEventListener('click', () => {
     if (qrHistory.length === 0) {
-        alert("Database empty. Run logs transactions before backing up parameters sheets!");
+        alert("History is empty. Nothing to back up!");
         return;
     }
-    const dataStringUri = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(qrHistory));
-    const shadowAnchorElement = document.createElement('a');
-    shadowAnchorElement.setAttribute("href", dataStringUri);
-    shadowAnchorElement.setAttribute("download", `Yaashtech_Master_Log_${new Date().toISOString().slice(0,10)}.json`);
-    document.body.appendChild(shadowAnchorElement);
-    shadowAnchorElement.click();
-    shadowAnchorElement.remove();
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(qrHistory));
+    const downloadAnchor = document.createElement('a');
+    downloadAnchor.setAttribute("href", dataStr);
+    downloadAnchor.setAttribute("download", `Yaashtech_QR_Backup_${new Date().toISOString().slice(0,10)}.json`);
+    document.body.appendChild(downloadAnchor);
+    downloadAnchor.click();
+    downloadAnchor.remove();
 });
 
-// 📥 RESTORE LOGS FILE PARSER ENGINE: Re-uploads standalone documents directly back inside live memories arrays
+// 📥 Re-upload saved backup log data files directly into active internal memory grids
 document.getElementById('importDatabaseFile').addEventListener('change', (event) => {
-    const uploadedFileBlob = event.target.files[0];
-    if (!uploadedFileBlob) return;
+    const file = event.target.files[0];
+    if (!file) return;
 
-    const fileReaderInstance = new FileReader();
-    fileReaderInstance.onload = function(e) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
         try {
-            const uploadedArrayLogs = JSON.parse(e.target.result);
-            if (Array.isArray(uploadedArrayLogs)) {
-                if (confirm("Merge database index document logs into active storage sheets panels?")) {
-                    const currentActiveIdsSet = new Set(qrHistory.map(item => item.id));
-                    const clearedUniqueLogs = uploadedArrayLogs.filter(item => !currentActiveIdsSet.has(item.id));
+            const importedData = JSON.parse(e.target.result);
+            if (Array.isArray(importedData)) {
+                if (confirm("Merge this dynamic backup log file with your active history memory?")) {
+                    const existingIds = new Set(qrHistory.map(item => item.id));
+                    const uniqueImported = importedData.filter(item => !existingIds.has(item.id));
                     
-                    qrHistory = [...clearedUniqueLogs, ...qrHistory];
-                    localStorage.setItem("yaashtech_enterprise_history", JSON.stringify(qrHistory));
+                    qrHistory = [...uniqueImported, ...qrHistory];
+                    localStorage.setItem("yaashtech_clean_history", JSON.stringify(qrHistory));
                     renderHistoryView();
-                    alert("Database transaction logs restored back to operational status successfully!");
+                    alert("Backup logs successfully restored!");
                 }
             } else {
-                alert("Malformed index log backup document format parameters.");
+                alert("Invalid backup log structural formatting profile.");
             }
         } catch (err) {
-            alert("Execution critical error: failed parsing target JSON system text configuration document.");
+            alert("Execution critical error: failed parsing target JSON text file configuration data.");
         }
     };
-    fileReaderInstance.readAsText(uploadedFileBlob);
+    reader.readAsText(file);
 });
 
-// Advanced capture engine injecting uniform 30px white scan margins into vector outputs downloads
+// Advanced capture layout: appends crisp 30px white border safety frames during download runtime mapping
 document.getElementById('downloadBtn').addEventListener('click', () => {
-    const rawTargetCanvas = qrContainer.querySelector('canvas');
-    if (rawTargetCanvas) {
-        const padding = 30; // 30px crisp high-contrast white scanning border margins zone
-        const borderedCanvas = document.createElement('canvas');
-        const context = borderedCanvas.getContext('2d');
+    const originalImg = qrContainer.querySelector('img');
+    if (originalImg) {
+        const tempImage = new Image();
+        tempImage.crossOrigin = "anonymous";
+        tempImage.src = originalImg.src;
         
-        borderedCanvas.width = rawTargetCanvas.width + (padding * 2);
-        borderedCanvas.height = rawTargetCanvas.height + (padding * 2);
-        
-        // Render white protective isolation zone blocks background canvas layers
-        context.fillStyle = "#ffffff";
-        context.fillRect(0, 0, borderedCanvas.width, borderedCanvas.height);
-        
-        // Blit vector graphic right inside center coordinate vectors grids
-        context.drawImage(rawTargetCanvas, padding, padding);
-        
-        const runtimeDownloadLinkNode = document.createElement('a');
-        runtimeDownloadLinkNode.download = `Yaashtech_HQ_Custom_QR.png`;
-        runtimeDownloadLinkNode.href = borderedCanvas.toDataURL("image/png");
-        runtimeDownloadLinkNode.click();
+        tempImage.onload = function() {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const padding = 30; 
+            
+            canvas.width = tempImage.width + (padding * 2);
+            canvas.height = tempImage.height + (padding * 2);
+            
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(tempImage, padding, padding);
+            
+            const finalDownloadLink = document.createElement('a');
+            finalDownloadLink.download = `Yaashtech_QR_${name || 'Code'}.png`;
+            finalDownloadLink.href = canvas.toDataURL("image/png");
+            finalDownloadLink.click();
+        };
     } else {
-        alert("Please map parameter forms inputs fields data strings before rendering asset capture arrays.");
+        alert("Please map form rows fields inputs data strings before running output compiles.");
     }
 });
 
-document.getElementById('clearHistoryBtn').addEventListener('click', () => {
-    if (confirm("Purge system active operational database transactions table logs completely?")) {
-        qrHistory = [];
-        localStorage.removeItem("yaashtech_enterprise_history");
-        renderHistoryView();
-        resetFieldsFormClean();
-    }
+// Bind element change event arrays triggers logic tracking loops
+document.querySelectorAll('.input-trigger').forEach(input => {
+    input.addEventListener('input', generateQRCode);
 });
-
-document.getElementById('logRecordBtn').addEventListener('click', commitRecordToDatabase);
-document.getElementById('qrType').addEventListener('change', resetFieldsFormClean);
-window.addEventListener('DOMContentLoaded', initEngine);
+document.getElementById('logRecordBtn').addEventListener('click', saveRecordToHistory);
+window.addEventListener('DOMContentLoaded', () => {
+    generateQRCode();
+    renderHistoryView();
+});
