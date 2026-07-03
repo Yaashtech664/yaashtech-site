@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Yaashtech | Advanced Business QR Engine</title>
+    <title>Yaashtech | Advanced Multi-Column QR Portal</title>
+    <!-- Load Tailwind CSS for clean, modern styling -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- Load the QR Code library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         body {
@@ -32,6 +34,7 @@
 </head>
 <body class="font-sans min-h-screen pb-10">
 
+    <!-- Top Sticky Header Navigation Bar -->
     <header class="bg-black border-b border-zinc-900 px-[5%] py-2.5 flex flex-col md:flex-row justify-between items-center sticky top-0 z-50 gap-4 md:gap-0">
         <div class="flex items-center gap-3">
             <img class="w-[90px] h-[90px] object-contain block" src="logo.png" alt="Yaashtech Logo">
@@ -46,22 +49,25 @@
     </header>
 
     <div class="max-w-7xl mx-auto mt-10 px-4">
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div class="grid grid-cols-1 xl:grid-cols-4 gap-8">
             
-            <div class="bg-zinc-950 rounded-2xl border border-zinc-900 p-6 space-y-6 shadow-xl h-fit">
+            <!-- COLUMN 1 & 2: Two-Column Blank Form Field Grid -->
+            <div class="xl:col-span-2 bg-zinc-950 rounded-2xl border border-zinc-900 p-6 space-y-6 shadow-xl h-fit">
                 <div>
                     <label class="block text-sm font-semibold text-zinc-300 mb-2">Select QR Code Type</label>
                     <select id="qrType" class="w-full bg-black text-white border border-zinc-800 rounded-lg p-2.5 shadow-sm focus:ring-2 focus:ring-[#00dcff] focus:border-[#00dcff] transition-all outline-none">
-                        <option value="vcard">Save Contact (Professional vCard)</option>
+                        <option value="vcard">Save Contact (Multi-Line Column vCard)</option>
                         <option value="whatsapp">Direct WhatsApp Chat Link</option>
                     </select>
                 </div>
 
                 <hr class="border-zinc-900">
 
-                <div id="formFields" class="space-y-4"></div>
+                <!-- Input elements are loaded empty here -->
+                <div id="formFields" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
             </div>
 
+            <!-- COLUMN 3: High-Capacity 300x300 Canvas Engine View -->
             <div class="bg-zinc-950 rounded-2xl border border-zinc-900 p-6 flex flex-col items-center justify-center text-center shadow-xl min-h-[480px] h-fit">
                 <span class="text-xs font-bold uppercase tracking-wider text-[#00dcff] mb-4">High-Capacity Instant Scan Frame</span>
                 
@@ -82,320 +88,33 @@
                 </div>
             </div>
 
-            <div class="bg-zinc-950 rounded-2xl border border-zinc-900 p-6 flex flex-col shadow-xl max-h-[550px]">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-white font-bold text-md tracking-wide flex items-center gap-2">
-                        📜 Active History Logs
-                    </h2>
-                    <button id="clearHistoryBtn" class="text-xs text-red-400 hover:text-red-500 font-bold cursor-pointer transition-colors">
-                        Clear All
+            <!-- COLUMN 4: Active History Manager with Dedicated JSON Backup Actions -->
+            <div class="bg-zinc-950 rounded-2xl border border-zinc-900 p-6 flex flex-col shadow-xl max-h-[620px] h-fit xl:h-auto">
+                <div class="flex justify-between items-center mb-3">
+                    <h2 class="text-white font-bold text-md tracking-wide">📜 Active History Logs</h2>
+                    <button id="clearHistoryBtn" class="text-xs text-red-400 hover:text-red-500 font-bold cursor-pointer transition-colors">Clear All</button>
+                </div>
+
+                <!-- File Backup/Restore Management Action Buttons -->
+                <div class="grid grid-cols-2 gap-2 mb-4">
+                    <button id="exportDatabaseBtn" class="bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-800 font-bold text-xs py-1.5 px-2 rounded-lg transition-all cursor-pointer">
+                        📤 Backup Logs
                     </button>
+                    <label class="bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-800 font-bold text-xs py-1.5 px-2 rounded-lg transition-all cursor-pointer text-center block">
+                        📥 Restore Logs
+                        <input type="file" id="importDatabaseFile" class="hidden" accept=".json">
+                    </label>
                 </div>
                 
                 <div id="historyLogList" class="space-y-3 overflow-y-auto flex-1 pr-1 text-left">
-                    </div>
+                    <!-- Javascript appends logged items items here -->
+                </div>
             </div>
 
         </div>
     </div>
 
-    <script>
-        let qrContainer = document.getElementById("qrcode");
-        let qrCodeInstance = null;
-        let qrHistory = JSON.parse(localStorage.getItem("yaashtech_qr_history")) || [];
-        let editingRecordId = null; // Track if we are editing an existing record
-
-        // Standard blank layouts for manual generation data tracking
-        const fieldTemplates = {
-            vcard: [
-                { id: 'name', label: 'Full Name', value: '', placeholder: 'e.g., Udhayakumar S' },
-                { id: 'title', label: 'Job Title / Designation', value: '', placeholder: 'e.g., Tech Support Specialist' },
-                { id: 'company', label: 'Company Name', value: '', placeholder: 'e.g., Yaashtech' },
-                { id: 'phone', label: 'Mobile Number', value: '', placeholder: 'e.g., +919080106508' },
-                { id: 'email', label: 'Email Address', value: '', placeholder: 'e.g., name@domain.com' },
-                { id: 'address', label: 'Office Address', value: '', placeholder: 'e.g., Kumananchavadi, Chennai' },
-                { id: 'pincode', label: 'Pin Code', value: '', placeholder: 'e.g., 600056' }
-            ],
-            whatsapp: [
-                { id: 'waPhone', label: 'WhatsApp Number (With Country Code)', value: '', placeholder: 'e.g., 919080106508' },
-                { id: 'waMessage', label: 'Pre-filled Message Text', value: '', placeholder: 'Type custom message...' }
-            ]
-        };
-
-        function buildForm() {
-            const type = document.getElementById('qrType').value;
-            const container = document.getElementById('formFields');
-            container.innerHTML = '';
-            editingRecordId = null; // Reset edit tracking state
-            document.getElementById('logRecordBtn').innerText = "💾 Save to History";
-
-            fieldTemplates[type].forEach(field => {
-                const wrapper = document.createElement('div');
-                wrapper.className = 'flex flex-col';
-                wrapper.innerHTML = `
-                    <label class="text-xs font-semibold text-zinc-400 mb-1">${field.label}</label>
-                    <input type="text" id="${field.id}" value="${field.value}" placeholder="${field.placeholder}" 
-                           class="w-full bg-black text-white border border-zinc-800 rounded-lg p-2 text-sm focus:outline-none transition-all focus:border-[#00dcff] input-trigger focus-cyan">
-                `;
-                container.appendChild(wrapper);
-            });
-
-            document.querySelectorAll('.input-trigger').forEach(input => {
-                input.addEventListener('input', generateQRCode);
-            });
-
-            generateQRCode();
-        }
-
-        function generateQRCode() {
-            const type = document.getElementById('qrType').value;
-            let finalPayload = "";
-
-            if (type === 'vcard') {
-                const name = document.getElementById('name').value;
-                const title = document.getElementById('title').value;
-                const company = document.getElementById('company').value;
-                const phone = document.getElementById('phone').value;
-                const email = document.getElementById('email').value;
-                const address = document.getElementById('address').value;
-                const pincode = document.getElementById('pincode').value;
-
-                if(name || phone) {
-                    finalPayload = `BEGIN:VCARD\nVERSION:3.0\nN:${name};;;;\nFN:${name}\nORG:${company}\nTITLE:${title}\nTEL;TYPE=CELL,VOICE:${phone}\nEMAIL;TYPE=PREF,INTERNET:${email}\nADR;TYPE=WORK:;;${address};;;${pincode};India\nEND:VCARD`;
-                }
-                document.getElementById('qrStatusLabel').innerText = "Raw vCard Contact Payload:";
-            } else {
-                const waPhone = document.getElementById('waPhone').value.replace(/[^0-9]/g, '');
-                const waMessage = encodeURIComponent(document.getElementById('waMessage').value);
-                if(waPhone) {
-                    finalPayload = `https://wa.me/${waPhone}?text=${waMessage}`;
-                }
-                document.getElementById('qrStatusLabel').innerText = "Direct WhatsApp Target URL:";
-            }
-
-            document.getElementById('rawPayload').value = finalPayload;
-            qrContainer.innerHTML = "";
-
-            // Optimized for large data: 300x300 size + Level M limits density while maintaining error tolerance
-            qrCodeInstance = new QRCode(qrContainer, {
-                text: finalPayload || "Yaashtech Engine Waiting...",
-                width: 300,
-                height: 300,
-                colorDark: "#000000",
-                colorLight: "#ffffff",
-                correctLevel: QRCode.CorrectLevel.M
-            });
-        }
-
-        function saveRecordToHistory() {
-            const type = document.getElementById('qrType').value;
-            let titleIdentifier = "";
-            let descriptionMetadata = "";
-
-            if (type === 'vcard') {
-                titleIdentifier = document.getElementById('name').value || "Blank Profile";
-                descriptionMetadata = document.getElementById('company').value || "vCard Contact File";
-            } else {
-                titleIdentifier = "+" + document.getElementById('waPhone').value || "WhatsApp Link";
-                descriptionMetadata = "Direct Chat Trigger Link";
-            }
-
-            const payloadDataStr = document.getElementById('rawPayload').value;
-            if(!payloadDataStr) {
-                alert("Please fill in fields before logging records.");
-                return;
-            }
-
-            if (editingRecordId !== null) {
-                // Update an existing record
-                qrHistory = qrHistory.map(record => {
-                    if (record.id === editingRecordId) {
-                        return {
-                            ...record,
-                            type: type,
-                            title: titleIdentifier,
-                            desc: descriptionMetadata,
-                            payload: payloadDataStr,
-                            timestamp: "Updated: " + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-                        };
-                    }
-                    return record;
-                });
-                editingRecordId = null;
-                document.getElementById('logRecordBtn').innerText = "💾 Save to History";
-            } else {
-                // Add new record
-                const newRecordObj = {
-                    id: Date.now(),
-                    type: type,
-                    title: titleIdentifier,
-                    desc: descriptionMetadata,
-                    payload: payloadDataStr,
-                    timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-                };
-                qrHistory.unshift(newRecordObj);
-            }
-
-            localStorage.setItem("yaashtech_qr_history", JSON.stringify(qrHistory));
-            renderHistoryView();
-            buildForm(); // Clear inputs out clean
-        }
-
-        function renderHistoryView() {
-            const viewportList = document.getElementById('historyLogList');
-            viewportList.innerHTML = "";
-
-            if (qrHistory.length === 0) {
-                viewportList.innerHTML = `
-                    <div class="text-center py-10 text-zinc-600 text-sm italic">
-                        No encoded history logs saved inside storage memory yet.
-                    </div>`;
-                return;
-            }
-
-            qrHistory.forEach(record => {
-                const logCard = document.createElement('div');
-                logCard.className = "bg-black border border-zinc-900 rounded-xl p-3.5 flex flex-col justify-between hover:border-[#00dcff] transition-all relative group";
-                logCard.innerHTML = `
-                    <div class="pr-12 cursor-pointer" onclick="loadPayloadBackToForm(${record.id})">
-                        <div class="flex items-center gap-2 mb-1">
-                            <span class="text-xs font-bold uppercase px-1.5 py-0.5 rounded bg-zinc-900 text-[#00dcff]">${record.type}</span>
-                            <span class="text-zinc-500 text-[11px] font-medium ml-auto">${record.timestamp}</span>
-                        </div>
-                        <h4 class="text-white text-sm font-bold truncate">${record.title}</h4>
-                        <p class="text-zinc-400 text-xs truncate mt-0.5">${record.desc}</p>
-                        <p class="text-[11px] text-[#00dcff] font-bold mt-2 opacity-0 group-hover:opacity-100 transition-opacity">✏️ Click to Edit/Update</p>
-                    </div>
-                    <button onclick="deleteSingleRecord(${record.id}); event.stopPropagation();" class="absolute top-3.5 right-3 text-zinc-600 hover:text-red-400 text-md transition-colors cursor-pointer">
-                        ✕
-                    </button>
-                `;
-                viewportList.appendChild(logCard);
-            });
-        }
-
-        window.loadPayloadBackToForm = function(recordId) {
-            const record = qrHistory.find(item => item.id === recordId);
-            if(!record) return;
-
-            editingRecordId = record.id;
-            document.getElementById('qrType').value = record.type;
-            document.getElementById('logRecordBtn').innerText = "🔄 Update Record";
-            
-            // Rebuild fields form matrix
-            const container = document.getElementById('formFields');
-            container.innerHTML = '';
-            
-            fieldTemplates[record.type].forEach(field => {
-                const wrapper = document.createElement('div');
-                wrapper.className = 'flex flex-col';
-                wrapper.innerHTML = `
-                    <label class="text-xs font-semibold text-zinc-400 mb-1">${field.label}</label>
-                    <input type="text" id="${field.id}" placeholder="${field.placeholder}" 
-                           class="w-full bg-black text-white border border-zinc-800 rounded-lg p-2 text-sm focus:outline-none transition-all focus:border-[#00dcff] input-trigger focus-cyan">
-                `;
-                container.appendChild(wrapper);
-            });
-
-            // Parse strings back inside targeted inputs
-            const payload = record.payload;
-            if (record.type === 'vcard') {
-                const nameM = payload.match(/FN:(.*?)\n/);
-                const orgM = payload.match(/ORG:(.*?)\n/);
-                const titleM = payload.match(/TITLE:(.*?)\n/);
-                const telM = payload.match(/TEL;TYPE=CON,VOICE:(.*?)\n/) || payload.match(/TEL;TYPE=CELL,VOICE:(.*?)\n/);
-                const emailM = payload.match(/EMAIL;TYPE=PREF,INTERNET:(.*?)\n/);
-                const adrM = payload.match(/ADR;TYPE=WORK:;;(.*?);;;(.*?);India/);
-
-                if(nameM) document.getElementById('name').value = nameM[1];
-                if(titleM) document.getElementById('title').value = titleM[1];
-                if(orgM) document.getElementById('company').value = orgM[1];
-                if(telM) document.getElementById('phone').value = telM[1];
-                if(emailM) document.getElementById('email').value = emailM[1];
-                if(adrM) {
-                    document.getElementById('address').value = adrM[1];
-                    document.getElementById('pincode').value = adrM[2];
-                }
-            } else {
-                const phoneM = payload.match(/wa\.me\/(.*?)\?/);
-                const msgM = payload.match(/\?text=(.*)/);
-                if(phoneM) document.getElementById('waPhone').value = phoneM[1];
-                if(msgM) document.getElementById('waMessage').value = decodeURIComponent(msgM[1]);
-            }
-
-            document.querySelectorAll('.input-trigger').forEach(input => {
-                input.addEventListener('input', generateQRCode);
-            });
-
-            document.getElementById('rawPayload').value = payload;
-            qrContainer.innerHTML = "";
-            qrCodeInstance = new QRCode(qrContainer, {
-                text: payload,
-                width: 300,
-                height: 300,
-                colorDark: "#000000",
-                colorLight: "#ffffff",
-                correctLevel: QRCode.CorrectLevel.M
-            });
-        };
-
-        window.deleteSingleRecord = function(recordId) {
-            qrHistory = qrHistory.filter(item => item.id !== recordId);
-            localStorage.setItem("yaashtech_qr_history", JSON.stringify(qrHistory));
-            renderHistoryView();
-            if(editingRecordId === recordId) {
-                buildForm();
-            }
-        };
-
-        document.getElementById('clearHistoryBtn').addEventListener('click', () => {
-            if (confirm("Are you sure you want to permanently delete your entire history log database?")) {
-                qrHistory = [];
-                localStorage.removeItem("yaashtech_qr_history");
-                renderHistoryView();
-                buildForm();
-            }
-        });
-
-        // Advanced download canvas interceptor injecting crisp white protective safety margins
-        document.getElementById('downloadBtn').addEventListener('click', () => {
-            const originalImg = qrContainer.querySelector('img');
-            if (originalImg) {
-                const tempImage = new Image();
-                tempImage.crossOrigin = "anonymous";
-                tempImage.src = originalImg.src;
-                
-                tempImage.onload = function() {
-                    const canvas = document.createElement('canvas');
-                    const ctx = canvas.getContext('2d');
-                    
-                    const padding = 30; // Creates a clean, uniform 30px white protective border on all sides
-                    canvas.width = tempImage.width + (padding * 2);
-                    canvas.height = tempImage.height + (padding * 2);
-                    
-                    // Paint background structure white
-                    ctx.fillStyle = "#ffffff";
-                    ctx.fillRect(0, 0, canvas.width, canvas.height);
-                    
-                    // Centered vector stamp stamp
-                    ctx.drawImage(tempImage, padding, padding);
-                    
-                    const finalDownloadLink = document.createElement('a');
-                    finalDownloadLink.download = `Yaashtech_QR_${document.getElementById('qrType').value}.png`;
-                    finalDownloadLink.href = canvas.toDataURL("image/png");
-                    finalDownloadLink.click();
-                };
-            } else {
-                alert("Please input data parameters before attempting capture downloads.");
-            }
-        });
-
-        document.getElementById('logRecordBtn').addEventListener('click', saveRecordToHistory);
-        document.getElementById('qrType').addEventListener('change', buildForm);
-        window.addEventListener('DOMContentLoaded', () => {
-            buildForm();
-            renderHistoryView();
-        });
-    </script>
+    <!-- Link to the separate external database logic file -->
+    <script src="qr_engine.js"></script>
 </body>
 </html>
