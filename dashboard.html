@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yaashtech | Central Operations Center</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        body { background-color: #000000; color: #a0aab2; }
+    </style>
+</head>
+<body class="font-sans min-h-screen flex flex-col justify-between">
+
+    <header class="bg-black border-b border-zinc-900 px-[5%] py-2.5 flex justify-between items-center sticky top-0 z-50">
+        <div class="flex items-center gap-3">
+            <img class="w-[90px] h-[90px] object-contain" src="logo.png" alt="Yaashtech Logo">
+            <div class="text-white text-[26px] font-bold tracking-[0.5px]">Yaash<span class="text-[#00dcff]">tech</span></div>
+        </div>
+        <nav class="flex gap-6 items-center">
+            <a href="dashboard.html" class="text-[#00dcff] font-bold text-[15px] border-b-2 border-[#00dcff] pb-1">Dashboard Hub</a>
+            <a href="qr_generator.html" class="text-white hover:text-[#00dcff] font-bold text-[15px] transition-colors">QR Generator</a>
+            <a href="#" class="text-zinc-600 font-bold text-[15px] cursor-not-allowed opacity-40">📦 Logistics (Future)</a>
+            <button onclick="logoutSession()" class="text-red-400 hover:text-red-500 font-bold text-[14px] ml-4 cursor-pointer">Lock & Exit</button>
+        </nav>
+    </header>
+
+    <main class="max-w-5xl mx-auto my-16 px-4 flex-1 w-full text-center space-y-6">
+        <div>
+            <span class="text-[11px] font-bold uppercase tracking-widest bg-zinc-900 text-[#00dcff] border border-zinc-800 px-3 py-1 rounded-full">Secure Session Validated</span>
+            <h1 class="text-white text-4xl font-black tracking-tight mt-4">Welcome to the Operations Hub</h1>
+            <p class="text-zinc-400 text-sm max-w-md mx-auto mt-2">Select an internal module from your top navigation toolbar to initialize active tools configurations.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto pt-6 text-left">
+            <div class="bg-zinc-950 border border-zinc-900 p-6 rounded-xl space-y-3">
+                <span class="text-2xl">🔳</span>
+                <h3 class="text-white font-bold text-lg">Contact QR Generator Engine</h3>
+                <p class="text-zinc-500 text-xs">Run high-capacity, local data multi-line vCard generations alongside separate file backup matrices logs.</p>
+                <a href="qr_generator.html" class="text-[#00dcff] text-xs font-bold block pt-2 hover:underline">Launch Tool Dashboard →</a>
+            </div>
+
+            <div class="bg-zinc-950 border border-zinc-900 p-6 rounded-xl space-y-3 opacity-50 border-dashed">
+                <span class="text-2xl">📦</span>
+                <h3 class="text-zinc-400 font-bold text-lg">Logistics & Supply Routing</h3>
+                <p class="text-zinc-600 text-xs">Supply lines routing management, transaction orders frameworks, and tracking manifests indicators. Locked under future development blocks.</p>
+                <span class="text-zinc-600 text-xs font-bold block pt-2 cursor-not-allowed">⚠️ Under Active Construction</span>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-zinc-950 border-t border-zinc-900 text-center py-5 text-xs text-zinc-600">
+        Active Security Firewall Monitor Running. Managed by Admin.
+    </footer>
+
+    <script>
+        // Secure Route Guard Verification Block Check
+        if (localStorage.getItem("yaashtech_session") !== "authenticated_token_active") {
+            window.location.href = "login.html"; // Rejects unauthenticated traffic instantly
+        }
+
+        function logoutSession() {
+            localStorage.removeItem("yaashtech_session");
+            window.location.href = "index.html";
+        }
+    </script>
+</body>
+</html>

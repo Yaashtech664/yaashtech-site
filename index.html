@@ -3,284 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Yaashtech | Master Business Portal</title>
+    <title>Yaashtech | Premium Laptop Repair & Servicing</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <style>
-        /* Obsidian Black Enterprise UI System */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        body {
-            background-color: #000000;
-            color: #a0aab2;
-            line-height: 1.6;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* Borderless Multi-Navigation Header */
-        header {
-            background-color: #000000;
-            border-bottom: 1px solid #111111;
-            padding: 10px 5%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .brand-container {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .brand-logo {
-            width: 90px;
-            height: 90px;
-            object-fit: contain;
-            display: block;
-        }
-
-        .brand-name {
-            color: #ffffff;
-            font-size: 26px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-        }
-
-        .brand-name span {
-            color: #00dcff;
-        }
-
-        /* Bold Top Menu Layout */
-        .top-menu {
-            display: flex;
-            gap: 25px;
-            align-items: center;
-        }
-
-        .menu-link {
-            color: #ffffff;
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 15px;
-            letter-spacing: 0.5px;
-            transition: color 0.2s;
-        }
-
-        .menu-link:hover {
-            color: #00dcff;
-        }
-
-        .menu-link.active-link {
-            color: #00dcff;
-            border-bottom: 2px solid #00dcff;
-            padding-bottom: 4px;
-        }
-
-        /* Welcome Center Banner */
-        .welcome-hero {
-            text-align: center;
-            padding: 60px 5% 30px 5%;
-            background: radial-gradient(circle at center, #0a0a0a 0%, #000000 100%);
-        }
-
-        .welcome-hero h1 {
-            color: #ffffff;
-            font-size: 46px;
-            font-weight: 800;
-            letter-spacing: -0.5px;
-            margin-bottom: 15px;
-        }
-
-        .welcome-hero h1 span {
-            color: #00dcff;
-        }
-
-        .welcome-hero p {
-            font-size: 17px;
-            color: #94a3b8;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        /* Dynamic Main Workspace Hub */
-        .hub-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 40px 5% 80px 5%;
-            flex: 1;
-            width: 100%;
-        }
-
-        .hub-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-        }
-
-        /* Modern Tool Card Templates */
-        .hub-card {
-            background-color: #050505;
-            border: 1px solid #111111;
-            border-radius: 14px;
-            padding: 35px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
-        }
-
-        .hub-card:hover {
-            border-color: #00dcff;
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 220, 255, 0.05);
-        }
-
-        .hub-card.disabled-card:hover {
-            border-color: #ff3d00;
-            box-shadow: 0 10px 20px rgba(255, 61, 0, 0.05);
-        }
-
-        .card-meta {
-            margin-bottom: 25px;
-        }
-
-        .card-badge {
-            font-size: 36px;
-            margin-bottom: 15px;
-            display: inline-block;
-        }
-
-        .hub-card h2 {
-            color: #ffffff;
-            font-size: 22px;
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
-
-        .hub-card p {
-            font-size: 15px;
-            color: #94a3b8;
-        }
-
-        /* Enterprise Control Buttons */
-        .btn-enter {
-            display: block;
-            text-align: center;
-            background-color: #111111;
-            color: #00dcff;
-            text-decoration: none;
-            padding: 12px;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 14px;
-            border: 1px solid #222222;
-            transition: background-color 0.2s, color 0.2s, border-color 0.2s;
-            margin-top: 20px;
-        }
-
-        .hub-card:hover .btn-enter {
-            background-color: #00dcff;
-            color: #000000;
-            border-color: #00dcff;
-        }
-
-        .btn-future {
-            display: block;
-            text-align: center;
-            background-color: #080302;
-            color: #ff3d00;
-            text-decoration: none;
-            padding: 12px;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 14px;
-            border: 1px dashed #331100;
-            margin-top: 20px;
-            cursor: not-allowed;
-        }
-
-        /* Responsive Layout Optimization */
-        @media (max-width: 768px) {
-            header {
-                flex-direction: column;
-                gap: 15px;
-                text-align: center;
-                padding: 20px 5%;
-            }
-            .top-menu {
-                flex-wrap: wrap;
-                justify-content: center;
-                gap: 15px;
-            }
-            .welcome-hero h1 {
-                font-size: 34px;
-            }
-        }
+        body { background-color: #000000; color: #a0aab2; }
     </style>
 </head>
-<body>
+<body class="font-sans min-h-screen flex flex-col justify-between">
 
-    <header>
-        <div class="brand-container">
-            <img class="brand-logo" src="logo.png" alt="Yaashtech Logo">
-            <div class="brand-name">Yaash<span>tech</span></div>
+    <header class="bg-black border-b border-zinc-900 px-[5%] py-2.5 flex justify-between items-center sticky top-0 z-50">
+        <div class="flex items-center gap-3">
+            <img class="w-[90px] h-[90px] object-contain" src="logo.png" alt="Yaashtech Logo">
+            <div class="text-white text-[26px] font-bold tracking-[0.5px]">Yaash<span class="text-[#00dcff]">tech</span></div>
         </div>
-        <nav class="top-menu">
-            <a href="index.html" class="menu-link active-link">Home</a>
-            <a href="laptop_service.html" class="menu-link">Laptop Repair</a>
-            <a href="qr_generator.html" class="menu-link">QR Generator</a>
-            <a href="#" class="menu-link" style="opacity: 0.4; cursor: not-allowed;">Logistics</a>
+        <nav class="flex gap-6 items-center">
+            <a href="index.html" class="text-[#00dcff] font-bold text-[15px] border-b-2 border-[#00dcff] pb-1">Home</a>
+            <a href="login.html" class="text-white hover:text-[#00dcff] font-bold text-[15px] transition-colors">Internal Portal Login 🔑</a>
         </nav>
     </header>
 
-    <main style="flex: 1;">
-        <section class="welcome-hero">
-            <h1>Welcome to <span>Yaashtech</span></h1>
-            <p>Select an operational management module from the infrastructure panel grid below to launch your workspace utility.</p>
-        </section>
+    <main class="max-w-4xl mx-auto my-12 px-4 flex-1 w-full">
+        <div class="text-center mb-12">
+            <h1 class="text-white text-4xl font-extrabold tracking-tight mb-3">Premium Laptop Servicing Menu</h1>
+            <p class="text-zinc-400 text-base max-w-xl mx-auto">Professional hardware repairs, chip-level diagnostics, and system optimizations under expert care.</p>
+        </div>
 
-        <section class="hub-container">
-            <div class="hub-grid">
-                
-                <div class="hub-card">
-                    <div class="card-meta">
-                        <span class="card-badge">💻</span>
-                        <h2>Laptop Repair</h2>
-                        <p>Access our premium chip-level hardware servicing terminal, SSD speed upgrade options, and clean OS engine deployment files.</p>
-                    </div>
-                    <a href="laptop_service.html" class="btn-enter">Enter Service Terminal →</a>
+        <div class="space-y-6">
+            <div class="bg-zinc-950 border border-zinc-900 rounded-xl p-6 flex gap-5 items-start">
+                <div class="text-3xl bg-zinc-900 p-3 rounded-lg border border-zinc-800 text-[#00dcff]">⚙️</div>
+                <div>
+                    <h3 class="text-white font-bold text-lg mb-1">Solid-State Drive (SSD) Speed Upgrades</h3>
+                    <p class="text-zinc-400 text-sm">Swap out sluggish legacy mechanical hard drives for modern NVMe solid-state drives. Boosts your computer system boot velocity up to 10x instantly.</p>
                 </div>
-
-                <div class="hub-card">
-                    <div class="card-meta">
-                        <span class="card-badge">🔳</span>
-                        <h2>QR Code Generator</h2>
-                        <p>Generate secure, optimized VCard QR contact cards instantly to pass your phone number, brand URL, and address seamlessly onto mobile devices.</p>
-                    </div>
-                    <a href="qr_generator.html" class="btn-enter">Launch Generator Engine →</a>
-                </div>
-
-                <div class="hub-card disabled-card">
-                    <div class="card-meta">
-                        <span class="card-badge" style="filter: grayscale(100%);">📦</span>
-                        <h2>Logistics / Operations</h2>
-                        <p>Supply line management, automated order routing frameworks, and scheduling utilities. Locked under active internal development.</p>
-                    </div>
-                    <div class="btn-future">⚠️ Under Development</div>
-                </div>
-
             </div>
-        </section>
+
+            <div class="bg-zinc-950 border border-zinc-900 rounded-xl p-6 flex gap-5 items-start">
+                <div class="text-3xl bg-zinc-900 p-3 rounded-lg border border-zinc-800 text-[#00dcff]">💻</div>
+                <div>
+                    <h3 class="text-white font-bold text-lg mb-1">Operating System (OS) Installation & Formatting</h3>
+                    <p class="text-zinc-400 text-sm">Clean device wiping, file system partition optimization, and fresh installations of Windows or macOS. Permanently cures blue-screen loops and virus infections.</p>
+                </div>
+            </div>
+
+            <div class="bg-zinc-950 border border-zinc-900 rounded-xl p-6 flex gap-5 items-start">
+                <div class="text-3xl bg-zinc-900 p-3 rounded-lg border border-zinc-800 text-[#00dcff]">🧼</div>
+                <div>
+                    <h3 class="text-white font-bold text-lg mb-1">Internal Deep Cleaning & Thermal Maintenance</h3>
+                    <p class="text-zinc-400 text-sm">Complete internal casing dust extraction, cooling fan balance adjustments, and premium thermal paste application to safeguard your CPU and GPU microchips from heat degradation.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-12">
+            <a href="https://wa.me/919080106508?text=Hi%20Yaashtech!%20I%20want%20to%20book%20a%20laptop%20service." target="_blank" class="inline-flex bg-emerald-500 hover:bg-emerald-600 text-black font-extrabold px-6 py-3 rounded-lg shadow-lg transition-colors gap-2 items-center">
+                💬 Book a Repair via WhatsApp
+            </a>
+        </div>
     </main>
+
+    <footer class="bg-zinc-950 border-t border-zinc-900 text-center py-5 text-xs text-zinc-600">
+        &copy; 2026 Yaashtech India. All Infrastructure Rights Reserved. Mapped for Yaashwin.
+    </footer>
 
 </body>
 </html>
