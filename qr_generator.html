@@ -3,63 +3,150 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Business Card QR Code Generator</title>
+    <title>Yaashtech | Premium QR Portal</title>
     <!-- Load Tailwind CSS for clean, modern styling -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <!-- Load the QR Code library -->
+    <!-- Load the classic high-capacity QR Code library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        body {
+            background-color: #000000;
+            color: #a0aab2;
+        }
+        .focus-cyan:focus {
+            border-color: #00dcff !important;
+            box-shadow: 0 0 0 2px rgba(0, 220, 255, 0.2) !important;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #050505;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #222222;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00dcff;
+        }
+    </style>
 </head>
-<body class="bg-gray-50 font-sans min-h-screen py-10 px-4">
+<body class="font-sans min-h-screen pb-10">
 
-    <div class="max-w-5xl mx-auto bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        
-        <!-- Header -->
-        <div class="bg-slate-900 text-white p-6 text-center">
-            <h1 class="text-2xl font-bold tracking-tight">Business Card QR Code Generator</h1>
-            <p class="text-slate-400 text-sm mt-1">Dynamic real-time QR creation for Contact vCards and WhatsApp Links</p>
+    <!-- Top Sticky Header Navigation Bar -->
+    <header class="bg-black border-b border-zinc-900 px-[5%] py-2.5 flex flex-col md:flex-row justify-between items-center sticky top-0 z-50 gap-4 md:gap-0">
+        <div class="flex items-center gap-3">
+            <img class="w-[90px] h-[90px] object-contain block" src="logo.png" alt="Yaashtech Logo">
+            <div class="text-white text-[26px] font-bold tracking-[0.5px]">Yaash<span class="text-[#00dcff]">tech</span></div>
         </div>
+        <nav class="flex gap-6 items-center">
+            <a href="index.html" class="text-white hover:text-[#00dcff] font-bold text-[15px] tracking-[0.5px] transition-colors">Home</a>
+            <a href="laptop_service.html" class="text-white hover:text-[#00dcff] font-bold text-[15px] tracking-[0.5px] transition-colors">Laptop Repair</a>
+            <a href="qr_generator.html" class="text-[#00dcff] font-bold text-[15px] tracking-[0.5px] border-b-2 border-[#00dcff] pb-1 transition-colors">QR Generator</a>
+            <a href="#" class="text-white font-bold text-[15px] tracking-[0.5px] opacity-40 cursor-not-allowed">Logistics</a>
+        </nav>
+    </header>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 p-6 md:p-8">
+    <div class="max-w-7xl mx-auto mt-10 px-4">
+        <div class="grid grid-cols-1 xl:grid-cols-4 gap-8">
             
-            <!-- Left Side: Inputs Form -->
-            <div class="space-y-6">
+            <!-- COLUMN 1 & 2: Form Input Rows Configuration -->
+            <div class="xl:col-span-2 bg-zinc-950 rounded-2xl border border-zinc-900 p-6 space-y-6 shadow-xl h-fit">
                 <div>
-                    <label class="block text-sm font-semibold text-gray-750 mb-2">Select QR Code Type</label>
-                    <select id="qrType" class="w-full bg-white border border-gray-300 rounded-lg p-2.5 shadow-xs focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none">
-                        <option value="vcard">Save Contact (Professional vCard)</option>
-                        <option value="whatsapp">Direct WhatsApp Chat Link</option>
-                    </select>
+                    <h2 class="text-white font-bold text-base tracking-wide uppercase text-[#00dcff]">1. Configuration Data Profile</h2>
                 </div>
 
-                <hr class="border-gray-200">
+                <hr class="border-zinc-900">
 
-                <!-- Dynamic Form Fields -->
-                <div id="formFields" class="space-y-4">
-                    <!-- JavaScript dynamically populates fields here -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="flex flex-col md:col-span-2">
+                        <label class="text-xs font-semibold text-zinc-400 mb-1">👤 Full Name</label>
+                        <input type="text" id="name" value="UDHAYAKUMAR S" class="w-full bg-black text-white border border-zinc-800 rounded-lg p-2.5 text-sm focus:outline-none transition-all focus-cyan input-trigger">
+                    </div>
+                    <div class="flex flex-col">
+                        <label class="text-xs font-semibold text-zinc-400 mb-1">💼 Job Title / Designation</label>
+                        <input type="text" id="title" value="HEAD IT" class="w-full bg-black text-white border border-zinc-800 rounded-lg p-2.5 text-sm focus:outline-none transition-all focus-cyan input-trigger">
+                    </div>
+                    <div class="flex flex-col">
+                        <label class="text-xs font-semibold text-zinc-400 mb-1">🏢 Company Name</label>
+                        <input type="text" id="company" value="BULLET LOGISTICS INDIA PRIVATE LIMITED" class="w-full bg-black text-white border border-zinc-800 rounded-lg p-2.5 text-sm focus:outline-none transition-all focus-cyan input-trigger">
+                    </div>
+                    <div class="flex flex-col">
+                        <label class="text-xs font-semibold text-zinc-400 mb-1">📞 Primary Mobile Number</label>
+                        <input type="text" id="phone1" value="9080106508" class="w-full bg-black text-white border border-zinc-800 rounded-lg p-2.5 text-sm focus:outline-none transition-all focus-cyan input-trigger">
+                    </div>
+                    <div class="flex flex-col">
+                        <label class="text-xs font-semibold text-zinc-400 mb-1">📱 Alternative Mobile Number</label>
+                        <input type="text" id="phone2" value="7502608869" class="w-full bg-black text-white border border-zinc-800 rounded-lg p-2.5 text-sm focus:outline-none transition-all focus-cyan input-trigger">
+                    </div>
+                    <div class="flex flex-col">
+                        <label class="text-xs font-semibold text-zinc-400 mb-1">✉️ Primary Email Address</label>
+                        <input type="text" id="email1" value="udhayam1794@gmail.com" class="w-full bg-black text-white border border-zinc-800 rounded-lg p-2.5 text-sm focus:outline-none transition-all focus-cyan input-trigger">
+                    </div>
+                    <div class="flex flex-col">
+                        <label class="text-xs font-semibold text-zinc-400 mb-1">📧 Alternative Email Address</label>
+                        <input type="text" id="email2" value="udhay@bulletlogistics.in" class="w-full bg-black text-white border border-zinc-800 rounded-lg p-2.5 text-sm focus:outline-none transition-all focus-cyan input-trigger">
+                    </div>
+                    <div class="flex flex-col md:col-span-2">
+                        <label class="text-xs font-semibold text-zinc-400 mb-1">🌐 Website URL Name</label>
+                        <input type="text" id="website" value="www.bulletlogistics.in" class="w-full bg-black text-white border border-zinc-800 rounded-lg p-2.5 text-sm focus:outline-none transition-all focus-cyan input-trigger">
+                    </div>
+                    <div class="flex flex-col md:col-span-2">
+                        <label class="text-xs font-semibold text-zinc-400 mb-1">📍 Office Address</label>
+                        <input type="text" id="address" value="No.112/B, P H Road, Velppanchavadi" class="w-full bg-black text-white border border-zinc-800 rounded-lg p-2.5 text-sm focus:outline-none transition-all focus-cyan input-trigger">
+                    </div>
+                    <div class="flex flex-col">
+                        <label class="text-xs font-semibold text-zinc-400 mb-1"> Pin Code</label>
+                        <input type="text" id="pincode" value="600056" class="w-full bg-black text-white border border-zinc-800 rounded-lg p-2.5 text-sm focus:outline-none transition-all focus-cyan input-trigger">
+                    </div>
                 </div>
             </div>
 
-            <!-- Right Side: Live QR Output Box -->
-            <div class="flex flex-col items-center justify-center bg-gray-50 rounded-xl p-6 border border-dashed border-gray-300 min-h-[400px]">
-                <span class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-4">Live Preview Scan Test</span>
+            <!-- COLUMN 3: Live Preview Canvas Engine Box -->
+            <div class="bg-zinc-950 rounded-2xl border border-zinc-900 p-6 flex flex-col items-center justify-center text-center shadow-xl min-h-[480px] h-fit">
+                <span class="text-xs font-bold uppercase tracking-wider text-[#00dcff] mb-4">Live Preview Scan Frame</span>
                 
-                <!-- Target container where the QR Code will render -->
-                <div id="qrcode" class="bg-white p-4 rounded-xl shadow-md border border-gray-200 inline-block"></div>
+                <div id="qrcode" class="bg-white p-4 rounded-xl shadow-md border border-zinc-200 inline-block"></div>
                 
-                <div class="mt-6 text-center w-full max-w-sm">
-                    <p id="qrStatusLabel" class="text-xs font-medium text-slate-500 mb-2 uppercase tracking-wide">Data Encoded:</p>
-                    <textarea id="rawPayload" readonly class="w-full text-xs font-mono bg-gray-100 border border-gray-200 rounded-md p-2 h-24 resize-none focus:outline-none focus:ring-0 text-gray-600"></textarea>
+                <div class="mt-6 text-center w-full">
+                    <p class="text-xs font-medium text-zinc-400 mb-2 uppercase tracking-wide">Data Encoded:</p>
+                    <textarea id="rawPayload" readonly class="w-full text-xs font-mono bg-black border border-zinc-900 rounded-md p-2 h-20 resize-none focus:outline-none text-zinc-500"></textarea>
                 </div>
                 
-                <button id="downloadBtn" class="mt-4 bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm py-2 px-4 rounded-lg shadow-xs cursor-pointer transition-all flex items-center gap-2">
-                    📥 Download QR Image
-                </button>
+                <div class="flex gap-3 w-full mt-4">
+                    <button id="downloadBtn" class="flex-1 bg-[#00dcff] hover:bg-[#00b2cc] text-black font-bold text-sm py-2.5 px-4 rounded-lg transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md">
+                        📥 Download + Border
+                    </button>
+                    <button id="logRecordBtn" class="bg-zinc-900 hover:bg-zinc-800 text-white border border-zinc-800 font-bold text-sm py-2.5 px-4 rounded-lg transition-all cursor-pointer">
+                        💾 Save to History
+                    </button>
+                </div>
+            </div>
+
+            <!-- COLUMN 4: Active History Manager -->
+            <div class="bg-zinc-950 rounded-2xl border border-zinc-900 p-6 flex flex-col shadow-xl max-h-[620px] h-fit xl:h-auto">
+                <div class="flex justify-between items-center mb-3">
+                    <h2 class="text-white font-bold text-md tracking-wide">📜 Active History Logs</h2>
+                    <button id="clearHistoryBtn" class="text-xs text-red-400 hover:text-red-500 font-bold cursor-pointer transition-colors">Clear All</button>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2 mb-4">
+                    <button id="exportDatabaseBtn" class="bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-800 font-bold text-xs py-1.5 px-2 rounded-lg transition-all cursor-pointer">
+                        Export Logs
+                    </button>
+                    <label class="bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-800 font-bold text-xs py-1.5 px-2 rounded-lg transition-all cursor-pointer text-center block">
+                        Import Logs
+                        <input type="file" id="importDatabaseFile" class="hidden" accept=".json">
+                    </label>
+                </div>
+                
+                <div id="historyLogList" class="space-y-3 overflow-y-auto flex-1 pr-1 text-left"></div>
             </div>
 
         </div>
     </div>
 
-    <!-- External Script Engine Linking -->
     <script src="qr_engine.js"></script>
 </body>
 </html>

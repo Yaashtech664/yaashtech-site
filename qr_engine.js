@@ -1,97 +1,235 @@
 let qrContainer = document.getElementById("qrcode");
 let qrCodeInstance = null;
+let qrHistory = JSON.parse(localStorage.getItem("yaashtech_clean_history")) || [];
+let editingRecordId = null;
 
-// Dynamic configuration structure mapping additional target details fields
-const fieldTemplates = {
-    vcard: [
-        { id: 'name', label: '👤 Full Name', value: 'Iyyanar', placeholder: 'e.g., Iyyanar' },
-        { id: 'title', label: '💼 Job Title / Designation', value: 'Managing Director', placeholder: 'e.g., Managing Director' },
-        { id: 'company', label: '🏢 Company Name', value: 'Bullet Trans Solutions Private Limited', placeholder: 'e.g., Bullet Trans' },
-        { id: 'phone1', label: '📞 Primary Mobile Number', value: '+919344590431', placeholder: 'e.g., +919344590431' },
-        { id: 'phone2', label: '📱 Alternative Mobile Number', value: '+919080106508', placeholder: 'e.g., +919080106508' },
-        { id: 'email', label: '✉️ Email Address', value: 'Iyyanar@bullettrans.in', placeholder: 'e.g., name@domain.com' },
-        { id: 'website', label: '🌐 Official Website URL', value: 'https://yaashtech.in', placeholder: 'e.g., https://domain.com' },
-        { id: 'address', label: '📍 Office Address', value: 'No.112/B, P H Road, Velappanchavadi, Chennai', placeholder: 'Street, City' },
-        { id: 'pincode', label: '🧱 Pin Code', value: '600077', placeholder: '600077' }
-    ],
-    whatsapp: [
-        { id: 'waPhone', label: '💬 WhatsApp Phone Number (Numbers only with country code)', value: '919344590431', placeholder: 'e.g., 919344590431' },
-        { id: 'waMessage', label: '📝 Default Pre-filled Message Text', value: 'Hello Sir, I would like to enquire about your logistics and transport services.', placeholder: 'Type custom text...' }
-    ]
+function generateQRCode() {
+    const name = document.getElementById('name').value;
+    const title = document.getElementById('title').value;
+    const company = document.getElementById('company').value;
+    const rawPhone1 = document.getElementById('phone1').value;
+    const rawPhone2 = document.getElementById('phone2').value;
+    const email1 = document.getElementById('email1').value;
+    const email2 = document.getElementById('email2').value;
+    const website = document.getElementById('website').value;
+    const address = document.getElementById('address').value;
+    const pincode = document.getElementById('pincode').value;
+
+    const phone1 = formatCountryCode(rawPhone1);
+    const phone2 = formatCountryCode(rawPhone2);
+
+    let finalPayload = "";
+    if (name || phone1) {
+        finalPayload = `BEGIN:VCARD\nVERSION:3.0\nN:${name};;;;\nFN:${name}\nORG:${company}\nTITLE:${title}\nTEL;TYPE=CELL,VOICE:${phone1}\nTEL;TYPE=WORK,FAX:${phone2}\nEMAIL;TYPE=PREF,INTERNET:${email1}\nEMAIL;TYPE=WORK,INTERNET:${email2}\nURL:${website}\nADR;TYPE=WORK:;;${address};;;${pincode};India\nEND:VCARD`;
+    }
+
+    document.getElementById('rawPayload').value = finalPayload;
+    qrContainer.innerHTML = "";
+
+    qrCodeInstance = new QRCode(qrContainer, {
+        text: finalPayload || "Yaashtech Engine Waiting...",
+        width: 300,
+        height: 300,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.M
+    });
+}
+
+function formatCountryCode(numberString) {
+    let cleanDigits = numberString.replace(/[^0-9+]/g, ''); 
+    if (!cleanDigits) return "";
+    if (cleanDigits.startsWith("+")) return cleanDigits;
+    if (cleanDigits.startsWith("91") && cleanDigits.length === 12) return "+" + cleanDigits;
+    if (cleanDigits.length === 10) return "+91" + cleanDigits;
+    return cleanDigits;
+}
+
+function saveRecordToHistory() {
+    const nameLabel = document.getElementById('name').value || "Blank Profile";
+    const companyLabel = document.getElementById('company').value || "vCard Contact File";
+    const payloadDataStr = document.getElementById('rawPayload').value;
+
+    if (!payloadDataStr) {
+        alert("Please input data details before tracking.");
+        return;
+    }
+
+    if (editingRecordId !== null) {
+        qrHistory = qrHistory.map(record => {
+            if (record.id === editingRecordId) {
+                return {
+                    ...record,
+                    title: nameLabel,
+                    desc: companyLabel,
+                    payload: payloadDataStr,
+                    timestamp: "Updated: " + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                };
+            }
+            return record;
+        });
+        editingRecordId = null;
+        document.getElementById('logRecordBtn').innerText = "💾 Save to History";
+    } else {
+        const newRecordObj = {
+            id: Date.now(),
+            title: nameLabel,
+            desc: companyLabel,
+            payload: payloadDataStr,
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        };
+        qrHistory.unshift(newRecordObj);
+    }
+
+    localStorage.setItem("yaashtech_clean_history", JSON.stringify(qrHistory));
+    renderHistoryView();
+    clearFormFields();
+}
+
+function renderHistoryView() {
+    const viewportList = document.getElementById('historyLogList');
+    viewportList.innerHTML = "";
+
+    if (qrHistory.length === 0) {
+        viewportList.innerHTML = `<div class="text-center py-10 text-zinc-600 text-xs italic">No saved history elements.</div>`;
+        return;
+    }
+
+    qrHistory.forEach(record => {
+        const logCard = document.createElement('div');
+        logCard.className = "bg-black border border-zinc-900 rounded-xl p-3.5 flex flex-col justify-between hover:border-[#00dcff] transition-all relative group";
+        logCard.innerHTML = `
+            <div class="pr-12 cursor-pointer" onclick="loadPayloadBackToForm(${record.id})">
+                <div class="flex items-center gap-2 mb-1">
+                    <span class="text-[10px] font-bold uppercase px-1.5 py-0.5 rounded bg-zinc-900 text-[#00dcff]">vCard</span>
+                    <span class="text-zinc-500 text-[10px] font-medium ml-auto">${record.timestamp}</span>
+                </div>
+                <h4 class="text-white text-xs font-bold truncate">${record.title}</h4>
+                <p class="text-zinc-400 text-[11px] truncate mt-0.5">${record.desc}</p>
+                <p class="text-[10px] text-[#00dcff] font-bold mt-2 opacity-0 group-hover:opacity-100 transition-opacity">✏️ Click to Edit/Restore</p>
+            </div>
+            <button onclick="deleteSingleRecord(${record.id}); event.stopPropagation();" class="absolute top-3.5 right-3 text-zinc-600 hover:text-red-400 text-md transition-colors cursor-pointer">✕</button>
+        `;
+        viewportList.appendChild(logCard);
+    });
+}
+
+window.loadPayloadBackToForm = function(recordId) {
+    const record = qrHistory.find(item => item.id === recordId);
+    if (!record) return;
+
+    editingRecordId = record.id;
+    document.getElementById('logRecordBtn').innerText = "🔄 Update Entry";
+    
+    const payload = record.payload;
+
+    const nameM = payload.match(/FN:(.*?)\n/);
+    const orgM = payload.match(/ORG:(.*?)\n/);
+    const titleM = payload.match(/TITLE:(.*?)\n/);
+    const tel1M = payload.match(/TEL;TYPE=CELL,VOICE:(.*?)\n/);
+    const tel2M = payload.match(/TEL;TYPE=WORK,FAX:(.*?)\n/);
+    const em1M = payload.match(/EMAIL;TYPE=PREF,INTERNET:(.*?)\n/);
+    const em2M = payload.match(/EMAIL;TYPE=WORK,INTERNET:(.*?)\n/);
+    const webM = payload.match(/URL:(.*?)\n/);
+    const adrM = payload.match(/ADR;TYPE=WORK:;;(.*?);;;(.*?);India/);
+
+    document.getElementById('name').value = nameM ? nameM[1] : "";
+    document.getElementById('title').value = titleM ? titleM[1] : "";
+    document.getElementById('company').value = orgM ? orgM[1] : "";
+    document.getElementById('phone1').value = tel1M ? tel1M[1] : "";
+    document.getElementById('phone2').value = tel2M ? tel2M[1] : "";
+    document.getElementById('email1').value = em1M ? em1M[1] : "";
+    document.getElementById('email2').value = em2M ? em2M[1] : "";
+    document.getElementById('website').value = webM ? webM[1] : "";
+    if (adrM) {
+        document.getElementById('address').value = adrM[1];
+        document.getElementById('pincode').value = adrM[2];
+    }
+
+    document.getElementById('rawPayload').value = payload;
+    qrContainer.innerHTML = "";
+    qrCodeInstance = new QRCode(qrContainer, {
+        text: payload,
+        width: 300,
+        height: 300,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.M
+    });
 };
 
-// Renders input fields based on drop-down choice
-function buildForm() {
-    const type = document.getElementById('qrType').value;
-    const container = document.getElementById('formFields');
-    container.innerHTML = '';
+window.deleteSingleRecord = function(recordId) {
+    qrHistory = qrHistory.filter(item => item.id !== recordId);
+    localStorage.setItem("yaashtech_clean_history", JSON.stringify(qrHistory));
+    renderHistoryView();
+    if (editingRecordId === recordId) clearFormFields();
+};
 
-    fieldTemplates[type].forEach(field => {
-        const wrapper = document.createElement('div');
-        wrapper.className = 'flex flex-col';
-        
-        wrapper.innerHTML = `
-            <label class="text-xs font-semibold text-gray-600 mb-1">${field.label}</label>
-            <input type="text" id="${field.id}" value="${field.value}" placeholder="${field.placeholder}" 
-                   class="w-full bg-white border border-gray-300 rounded-lg p-2 text-sm shadow-2xs focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all input-trigger">
-        `;
-        container.appendChild(wrapper);
-    });
-
-    // Rebind real-time input event listeners to all newly created elements
-    document.querySelectorAll('.input-trigger').forEach(input => {
-        input.addEventListener('input', generateQRCode);
-    });
-
+function clearFormFields() {
+    editingRecordId = null;
+    document.getElementById('name').value = "";
+    document.getElementById('title').value = "";
+    document.getElementById('company').value = "";
+    document.getElementById('phone1').value = "";
+    document.getElementById('phone2').value = "";
+    document.getElementById('email1').value = "";
+    document.getElementById('email2').value = "";
+    document.getElementById('website').value = "";
+    document.getElementById('address').value = "";
+    document.getElementById('pincode').value = "";
+    document.getElementById('logRecordBtn').innerText = "💾 Save to History";
     generateQRCode();
 }
 
-// Compiles data outputs and refreshes the canvas QR view
-function generateQRCode() {
-    const type = document.getElementById('qrType').value;
-    let finalPayload = "";
-
-    if (type === 'vcard') {
-        const name = document.getElementById('name').value;
-        const title = document.getElementById('title').value;
-        const company = document.getElementById('company').value;
-        const phone1 = document.getElementById('phone1').value;
-        const phone2 = document.getElementById('phone2').value;
-        const email = document.getElementById('email').value;
-        const website = document.getElementById('website').value;
-        const address = document.getElementById('address').value;
-        const pincode = document.getElementById('pincode').value;
-
-        // Build standardized raw vCard string supporting multi-phone and web links rows
-        finalPayload = `BEGIN:VCARD\nVERSION:3.0\nN:${name};;;;\nFN:${name}\nORG:${company}\nTITLE:${title}\nTEL;TYPE=CELL,VOICE:${phone1}\nTEL;TYPE=WORK,VOICE:${phone2}\nEMAIL;TYPE=PREF,INTERNET:${email}\nURL:${website}\nADR;TYPE=WORK:;;${address};;;${pincode};India\nEND:VCARD`;
-        document.getElementById('qrStatusLabel').innerText = "Raw vCard Contact Payload:";
-    } else {
-        const waPhone = document.getElementById('waPhone').value.replace(/[^0-9]/g, '');
-        const waMessage = encodeURIComponent(document.getElementById('waMessage').value);
-        
-        // Build standardized WhatsApp click-to-chat URL string
-        finalPayload = `https://wa.me/${waPhone}?text=${waMessage}`;
-        document.getElementById('qrStatusLabel').innerText = "Direct WhatsApp Target URL:";
+document.getElementById('clearHistoryBtn').addEventListener('click', () => {
+    if (confirm("Permanently wipe your local logs database history?")) {
+        qrHistory = [];
+        localStorage.removeItem("yaashtech_clean_history");
+        renderHistoryView();
+        clearFormFields();
     }
+});
 
-    // Update debug text visualization panel
-    document.getElementById('rawPayload').value = finalPayload;
+document.getElementById('exportDatabaseBtn').addEventListener('click', () => {
+    if (qrHistory.length === 0) {
+        alert("History is empty. Nothing to back up!");
+        return;
+    }
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(qrHistory));
+    const downloadAnchor = document.createElement('a');
+    downloadAnchor.setAttribute("href", dataStr);
+    downloadAnchor.setAttribute("download", `Yaashtech_QR_Backup_${new Date().toISOString().slice(0,10)}.json`);
+    document.body.appendChild(downloadAnchor);
+    downloadAnchor.click();
+    downloadAnchor.remove();
+});
 
-    // Wipe out old rendering elements clean
-    qrContainer.innerHTML = "";
+document.getElementById('importDatabaseFile').addEventListener('change', (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
 
-    // Initialize fresh layout context execution engine object (Enhanced 300x300 structural sizing frame)
-    qrCodeInstance = new QRCode(qrContainer, {
-        text: finalPayload || "Waiting for inputs...",
-        width: 300,
-        height: 300,
-        colorDark: "#0f172a", 
-        colorLight: "#ffffff",
-        correctLevel: QRCode.CorrectLevel.M 
-    });
-}
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const importedData = JSON.parse(e.target.result);
+            if (Array.isArray(importedData)) {
+                if (confirm("Merge this dynamic backup log file with your active history memory?")) {
+                    const existingIds = new Set(qrHistory.map(item => item.id));
+                    const uniqueImported = importedData.filter(item => !existingIds.has(item.id));
+                    
+                    qrHistory = [...uniqueImported, ...qrHistory];
+                    localStorage.setItem("yaashtech_clean_history", JSON.stringify(qrHistory));
+                    renderHistoryView();
+                    alert("Backup logs successfully restored!");
+                }
+            }
+        } catch (err) {
+            alert("Error parsing backup JSON data.");
+        }
+    };
+    reader.readAsText(file);
+});
 
-// Download functionality handling standard PNG output capture stream with white scanning margins
 document.getElementById('downloadBtn').addEventListener('click', () => {
     const originalImg = qrContainer.querySelector('img');
     if (originalImg) {
@@ -102,7 +240,7 @@ document.getElementById('downloadBtn').addEventListener('click', () => {
         tempImage.onload = function() {
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
-            const padding = 30; // 30px uniform protective scanning border
+            const padding = 30; 
             
             canvas.width = tempImage.width + (padding * 2);
             canvas.height = tempImage.height + (padding * 2);
@@ -116,11 +254,14 @@ document.getElementById('downloadBtn').addEventListener('click', () => {
             finalDownloadLink.href = canvas.toDataURL("image/png");
             finalDownloadLink.click();
         };
-    } else {
-        alert("Please wait for the QR code to finish rendering before downloading.");
     }
 });
 
-// Initialize dynamic boot cycle sequencing
-document.getElementById('qrType').addEventListener('change', buildForm);
-window.addEventListener('DOMContentLoaded', buildForm);
+document.querySelectorAll('.input-trigger').forEach(input => {
+    input.addEventListener('input', generateQRCode);
+});
+document.getElementById('logRecordBtn').addEventListener('click', saveRecordToHistory);
+window.addEventListener('DOMContentLoaded', () => {
+    generateQRCode();
+    renderHistoryView();
+});
