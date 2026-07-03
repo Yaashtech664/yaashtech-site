@@ -3,24 +3,85 @@ let qrCodeInstance = null;
 let qrHistory = JSON.parse(localStorage.getItem("yaashtech_clean_history")) || [];
 let editingRecordId = null;
 
+// Multi-Column Template Grid Array Mapping Symbols
+const fieldTemplates = {
+    vcard: [
+        { id: 'name', label: '👤 Full Name', value: 'UDHAYAKUMAR S', placeholder: 'e.g., Udhayakumar S', fullWidth: true },
+        { id: 'title', label: '💼 Job Title / Designation', value: 'HEAD IT', placeholder: 'e.g., Managing Director' },
+        { id: 'company', label: '🏢 Company Name', value: 'BULLET LOGISTICS INDIA PRIVATE LIMITED', placeholder: 'e.g., Yaashtech' },
+        { id: 'phone1', label: '📞 Primary Mobile Number', value: '9080106508', placeholder: 'e.g., 9080106508 or +91...' },
+        { id: 'phone2', label: '📱 Alternative Mobile Number', value: '7502608869', placeholder: 'e.g., 7502608869' },
+        { id: 'email1', label: '✉️ Primary Email Address', value: 'udhayam1794@gmail.com', placeholder: 'e.g., name@domain.com' },
+        { id: 'email2', label: '📧 Alternative Email Address', value: 'udhay@bulletlogistics.in', placeholder: 'e.g., info@domain.com' },
+        { id: 'address', label: '📍 Office Address', value: 'No.112/B, P H Road, Velppanchavadi', fullWidth: true },
+        { id: 'pincode', label: '🧱 Pin Code', value: '600056', fullWidth: false }
+    ],
+    whatsapp: [
+        { id: 'waPhone', label: '💬 WhatsApp Number', value: '9080106508', placeholder: 'e.g., 9080106508', fullWidth: true },
+        { id: 'waMessage', label: '📝 Pre-filled Message Text', value: 'Hi Yaashtech! I want to enquire about laptop servicing.', fullWidth: true }
+    ]
+};
+
+function buildForm() {
+    const type = document.getElementById('qrType').value;
+    const container = document.getElementById('formFields');
+    container.innerHTML = '';
+    editingRecordId = null;
+    document.getElementById('logRecordBtn').innerText = "💾 Save to History";
+
+    fieldTemplates[type].forEach(field => {
+        const wrapper = document.createElement('div');
+        wrapper.className = field.fullWidth ? 'flex flex-col md:col-span-2' : 'flex flex-col';
+        wrapper.innerHTML = `
+            <label class="text-xs font-semibold text-zinc-400 mb-1">${field.label}</label>
+            <input type="text" id="${field.id}" value="${field.value}" placeholder="${field.placeholder}" 
+                   class="w-full bg-black text-white border border-zinc-800 rounded-lg p-2 text-sm focus:outline-none transition-all focus:border-[#00dcff] input-trigger focus-cyan">
+        `;
+        container.appendChild(wrapper);
+    });
+
+    document.querySelectorAll('.input-trigger').forEach(input => {
+        input.addEventListener('input', generateQRCode);
+    });
+
+    generateQRCode();
+}
+
+function formatCountryCode(numberString) {
+    let cleanDigits = numberString.replace(/[^0-9+]/g, ''); 
+    if (!cleanDigits) return "";
+    if (cleanDigits.startsWith("+")) return cleanDigits;
+    if (cleanDigits.startsWith("91") && cleanDigits.length === 12) return "+" + cleanDigits;
+    if (cleanDigits.length === 10) return "+91" + cleanDigits;
+    return cleanDigits;
+}
+
 function generateQRCode() {
-    const name = document.getElementById('name').value;
-    const title = document.getElementById('title').value;
-    const company = document.getElementById('company').value;
-    const rawPhone1 = document.getElementById('phone1').value;
-    const rawPhone2 = document.getElementById('phone2').value;
-    const email1 = document.getElementById('email1').value;
-    const email2 = document.getElementById('email2').value;
-    const website = document.getElementById('website').value;
-    const address = document.getElementById('address').value;
-    const pincode = document.getElementById('pincode').value;
-
-    const phone1 = formatCountryCode(rawPhone1);
-    const phone2 = formatCountryCode(rawPhone2);
-
+    const type = document.getElementById('qrType').value;
     let finalPayload = "";
-    if (name || phone1) {
-        finalPayload = `BEGIN:VCARD\nVERSION:3.0\nN:${name};;;;\nFN:${name}\nORG:${company}\nTITLE:${title}\nTEL;TYPE=CELL,VOICE:${phone1}\nTEL;TYPE=WORK,FAX:${phone2}\nEMAIL;TYPE=PREF,INTERNET:${email1}\nEMAIL;TYPE=WORK,INTERNET:${email2}\nURL:${website}\nADR;TYPE=WORK:;;${address};;;${pincode};India\nEND:VCARD`;
+
+    if (type === 'vcard') {
+        const name = document.getElementById('name').value;
+        const title = document.getElementById('title').value;
+        const company = document.getElementById('company').value;
+        const rawPhone1 = document.getElementById('phone1').value;
+        const rawPhone2 = document.getElementById('phone2').value;
+        const email1 = document.getElementById('email1').value;
+        const email2 = document.getElementById('email2').value;
+        const address = document.getElementById('address').value;
+        const pincode = document.getElementById('pincode').value;
+
+        const phone1 = formatCountryCode(rawPhone1);
+        const phone2 = formatCountryCode(rawPhone2);
+
+        if(name || phone1) {
+            finalPayload = `BEGIN:VCARD\nVERSION:3.0\nN:${name};;;;\nFN:${name}\nORG:${company}\nTITLE:${title}\nTEL;TYPE=CELL,VOICE:${phone1}\nTEL;TYPE=WORK,FAX:${phone2}\nEMAIL;TYPE=PREF,INTERNET:${email1}\nEMAIL;TYPE=WORK,INTERNET:${email2}\nADR;TYPE=WORK:;;${address};;;${pincode};India\nEND:VCARD`;
+        }
+    } else {
+        let rawWaPhone = document.getElementById('waPhone').value.replace(/[^0-9]/g, '');
+        if (rawWaPhone.length === 10) rawWaPhone = "91" + rawWaPhone;
+        const waMessage = encodeURIComponent(document.getElementById('waMessage').value);
+        if(rawWaPhone) finalPayload = `https://wa.me/${rawWaPhone}?text=${waMessage}`;
     }
 
     document.getElementById('rawPayload').value = finalPayload;
@@ -36,22 +97,22 @@ function generateQRCode() {
     });
 }
 
-function formatCountryCode(numberString) {
-    let cleanDigits = numberString.replace(/[^0-9+]/g, ''); 
-    if (!cleanDigits) return "";
-    if (cleanDigits.startsWith("+")) return cleanDigits;
-    if (cleanDigits.startsWith("91") && cleanDigits.length === 12) return "+" + cleanDigits;
-    if (cleanDigits.length === 10) return "+91" + cleanDigits;
-    return cleanDigits;
-}
-
 function saveRecordToHistory() {
-    const nameLabel = document.getElementById('name').value || "Blank Profile";
-    const companyLabel = document.getElementById('company').value || "vCard Contact File";
-    const payloadDataStr = document.getElementById('rawPayload').value;
+    const type = document.getElementById('qrType').value;
+    let titleIdentifier = "";
+    let descriptionMetadata = "";
 
-    if (!payloadDataStr) {
-        alert("Please input data details before tracking.");
+    if (type === 'vcard') {
+        titleIdentifier = document.getElementById('name').value || "Blank Profile";
+        descriptionMetadata = document.getElementById('company').value || "vCard Contact File";
+    } else {
+        titleIdentifier = "+" + document.getElementById('waPhone').value || "WhatsApp Link";
+        descriptionMetadata = "Direct Chat Trigger Link";
+    }
+
+    const payloadDataStr = document.getElementById('rawPayload').value;
+    if(!payloadDataStr) {
+        alert("Please fill in fields before logging records.");
         return;
     }
 
@@ -60,8 +121,9 @@ function saveRecordToHistory() {
             if (record.id === editingRecordId) {
                 return {
                     ...record,
-                    title: nameLabel,
-                    desc: companyLabel,
+                    type: type,
+                    title: titleIdentifier,
+                    desc: descriptionMetadata,
                     payload: payloadDataStr,
                     timestamp: "Updated: " + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
                 };
@@ -73,8 +135,9 @@ function saveRecordToHistory() {
     } else {
         const newRecordObj = {
             id: Date.now(),
-            title: nameLabel,
-            desc: companyLabel,
+            type: type,
+            title: titleIdentifier,
+            desc: descriptionMetadata,
             payload: payloadDataStr,
             timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         };
@@ -83,7 +146,7 @@ function saveRecordToHistory() {
 
     localStorage.setItem("yaashtech_clean_history", JSON.stringify(qrHistory));
     renderHistoryView();
-    clearFormFields();
+    buildForm();
 }
 
 function renderHistoryView() {
@@ -101,7 +164,7 @@ function renderHistoryView() {
         logCard.innerHTML = `
             <div class="pr-12 cursor-pointer" onclick="loadPayloadBackToForm(${record.id})">
                 <div class="flex items-center gap-2 mb-1">
-                    <span class="text-[10px] font-bold uppercase px-1.5 py-0.5 rounded bg-zinc-900 text-[#00dcff]">vCard</span>
+                    <span class="text-[10px] font-bold uppercase px-1.5 py-0.5 rounded bg-zinc-900 text-[#00dcff]">${record.type}</span>
                     <span class="text-zinc-500 text-[10px] font-medium ml-auto">${record.timestamp}</span>
                 </div>
                 <h4 class="text-white text-xs font-bold truncate">${record.title}</h4>
@@ -116,34 +179,41 @@ function renderHistoryView() {
 
 window.loadPayloadBackToForm = function(recordId) {
     const record = qrHistory.find(item => item.id === recordId);
-    if (!record) return;
+    if(!record) return;
 
     editingRecordId = record.id;
+    document.getElementById('qrType').value = record.type;
     document.getElementById('logRecordBtn').innerText = "🔄 Update Entry";
     
+    buildForm();
+
     const payload = record.payload;
+    if (record.type === 'vcard') {
+        const nameM = payload.match(/FN:(.*?)\n/);
+        const orgM = payload.match(/ORG:(.*?)\n/);
+        const titleM = payload.match(/TITLE:(.*?)\n/);
+        const tel1M = payload.match(/TEL;TYPE=CELL,VOICE:(.*?)\n/);
+        const tel2M = payload.match(/TEL;TYPE=WORK,FAX:(.*?)\n/);
+        const em1M = payload.match(/EMAIL;TYPE=PREF,INTERNET:(.*?)\n/);
+        const em2M = payload.match(/EMAIL;TYPE=WORK,INTERNET:(.*?)\n/);
+        const adrM = payload.match(/ADR;TYPE=WORK:;;(.*?);;;(.*?);India/);
 
-    const nameM = payload.match(/FN:(.*?)\n/);
-    const orgM = payload.match(/ORG:(.*?)\n/);
-    const titleM = payload.match(/TITLE:(.*?)\n/);
-    const tel1M = payload.match(/TEL;TYPE=CELL,VOICE:(.*?)\n/);
-    const tel2M = payload.match(/TEL;TYPE=WORK,FAX:(.*?)\n/);
-    const em1M = payload.match(/EMAIL;TYPE=PREF,INTERNET:(.*?)\n/);
-    const em2M = payload.match(/EMAIL;TYPE=WORK,INTERNET:(.*?)\n/);
-    const webM = payload.match(/URL:(.*?)\n/);
-    const adrM = payload.match(/ADR;TYPE=WORK:;;(.*?);;;(.*?);India/);
-
-    document.getElementById('name').value = nameM ? nameM[1] : "";
-    document.getElementById('title').value = titleM ? titleM[1] : "";
-    document.getElementById('company').value = orgM ? orgM[1] : "";
-    document.getElementById('phone1').value = tel1M ? tel1M[1] : "";
-    document.getElementById('phone2').value = tel2M ? tel2M[1] : "";
-    document.getElementById('email1').value = em1M ? em1M[1] : "";
-    document.getElementById('email2').value = em2M ? em2M[1] : "";
-    document.getElementById('website').value = webM ? webM[1] : "";
-    if (adrM) {
-        document.getElementById('address').value = adrM[1];
-        document.getElementById('pincode').value = adrM[2];
+        if(nameM) document.getElementById('name').value = nameM[1];
+        if(titleM) document.getElementById('title').value = titleM[1];
+        if(orgM) document.getElementById('company').value = orgM[1];
+        if(tel1M) document.getElementById('phone1').value = tel1M[1];
+        if(tel2M) document.getElementById('phone2').value = tel2M[1];
+        if(em1M) document.getElementById('email1').value = em1M[1];
+        if(em2M) document.getElementById('email2').value = em2M[1];
+        if(adrM) {
+            document.getElementById('address').value = adrM[1];
+            document.getElementById('pincode').value = adrM[2];
+        }
+    } else {
+        const phoneM = payload.match(/wa\.me\/(.*?)\?/);
+        const msgM = payload.match(/\?text=(.*)/);
+        if(phoneM) document.getElementById('waPhone').value = phoneM[1];
+        if(msgM) document.getElementById('waMessage').value = decodeURIComponent(msgM[1]);
     }
 
     document.getElementById('rawPayload').value = payload;
@@ -162,31 +232,15 @@ window.deleteSingleRecord = function(recordId) {
     qrHistory = qrHistory.filter(item => item.id !== recordId);
     localStorage.setItem("yaashtech_clean_history", JSON.stringify(qrHistory));
     renderHistoryView();
-    if (editingRecordId === recordId) clearFormFields();
+    if(editingRecordId === recordId) buildForm();
 };
 
-function clearFormFields() {
-    editingRecordId = null;
-    document.getElementById('name').value = "";
-    document.getElementById('title').value = "";
-    document.getElementById('company').value = "";
-    document.getElementById('phone1').value = "";
-    document.getElementById('phone2').value = "";
-    document.getElementById('email1').value = "";
-    document.getElementById('email2').value = "";
-    document.getElementById('website').value = "";
-    document.getElementById('address').value = "";
-    document.getElementById('pincode').value = "";
-    document.getElementById('logRecordBtn').innerText = "💾 Save to History";
-    generateQRCode();
-}
-
 document.getElementById('clearHistoryBtn').addEventListener('click', () => {
-    if (confirm("Permanently wipe your local logs database history?")) {
+    if (confirm("Permanently wipe history database logs?")) {
         qrHistory = [];
         localStorage.removeItem("yaashtech_clean_history");
         renderHistoryView();
-        clearFormFields();
+        buildForm();
     }
 });
 
@@ -213,14 +267,14 @@ document.getElementById('importDatabaseFile').addEventListener('change', (event)
         try {
             const importedData = JSON.parse(e.target.result);
             if (Array.isArray(importedData)) {
-                if (confirm("Merge this dynamic backup log file with your active history memory?")) {
+                if (confirm("Merge this backup file with active history?")) {
                     const existingIds = new Set(qrHistory.map(item => item.id));
                     const uniqueImported = importedData.filter(item => !existingIds.has(item.id));
                     
                     qrHistory = [...uniqueImported, ...qrHistory];
                     localStorage.setItem("yaashtech_clean_history", JSON.stringify(qrHistory));
                     renderHistoryView();
-                    alert("Backup logs successfully restored!");
+                    alert("Logs restored successfully!");
                 }
             }
         } catch (err) {
@@ -257,11 +311,9 @@ document.getElementById('downloadBtn').addEventListener('click', () => {
     }
 });
 
-document.querySelectorAll('.input-trigger').forEach(input => {
-    input.addEventListener('input', generateQRCode);
-});
 document.getElementById('logRecordBtn').addEventListener('click', saveRecordToHistory);
+document.getElementById('qrType').addEventListener('change', buildForm);
 window.addEventListener('DOMContentLoaded', () => {
-    generateQRCode();
+    buildForm();
     renderHistoryView();
 });
