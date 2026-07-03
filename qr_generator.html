@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yaashtech | VCard QR Code Engine</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #000000;
+            color: #a0aab2;
+            line-height: 1.6;
+        }
+
+        header {
+            background-color: #000000;
+            border-bottom: 1px solid #111111;
+            padding: 10px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand-container { display: flex; align-items: center; gap: 12px; }
+        .brand-logo { width: 90px; height: 90px; object-fit: contain; display: block; }
+        .brand-name { color: #ffffff; font-size: 26px; font-weight: 700; }
+        .brand-name span { color: #00dcff; }
+        
+        .top-menu { display: flex; gap: 25px; align-items: center; }
+        .menu-link { color: #ffffff; text-decoration: none; font-weight: 700; font-size: 15px; }
+        .menu-link:hover { color: #00dcff; }
+        .menu-link.active-link { color: #00dcff; border-bottom: 2px solid #00dcff; padding-bottom: 4px; }
+
+        .container { max-width: 600px; margin: 50px auto; padding: 0 5%; text-align: center; }
+        .back-link { display: inline-block; color: #00dcff; text-decoration: none; font-weight: 700; margin-bottom: 20px; text-align: left; width: 100%; }
+        
+        h1 { color: #ffffff; font-size: 36px; margin-bottom: 10px; font-weight: 800; }
+        .subtitle { color: #94a3b8; margin-bottom: 40px; }
+
+        .qr-card {
+            background-color: #050505;
+            border: 1px dashed #00dcff;
+            border-radius: 14px;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 25px;
+        }
+
+        /* Standardized High Contrast Digital QR Container */
+        .qr-output-frame {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            display: inline-block;
+        }
+
+        .qr-output-frame img {
+            display: block;
+            width: 200px;
+            height: 200px;
+        }
+
+        .btn-action {
+            display: inline-block;
+            background-color: #111111;
+            color: #ffffff;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 700;
+            border: 1px solid #222222;
+            transition: color 0.2s, border-color 0.2s;
+        }
+
+        .btn-action:hover {
+            color: #00dcff;
+            border-color: #00dcff;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="brand-container">
+            <img class="brand-logo" src="logo.png" alt="Yaashtech Logo">
+            <div class="brand-name">Yaash<span>tech</span></div>
+        </div>
+        <nav class="top-menu">
+            <a href="index.html" class="menu-link">Home</a>
+            <a href="laptop_service.html" class="menu-link">Laptop Repair</a>
+            <a href="qr_generator.html" class="menu-link active-link">QR Generator</a>
+            <a href="#" class="menu-link" style="opacity: 0.4; cursor: not-allowed;">Logistics</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <a href="index.html" class="back-link">← Return to Control Hub</a>
+        <h1>VCard QR Contact Card</h1>
+        <p class="subtitle">Scan the vector framework below with any mobile camera smartphone to import the verified Yaashtech business profile instantly.</p>
+
+        <div class="qr-card">
+            <div class="qr-output-frame">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=BEGIN%3AVCARD%0AVERSION%3A3.0%0AN%3AUdhayakumar%3BS.%0AORG%3AYaashtech%20Laptop%20Services%0ATEL%3BTYPE%3DCELL%3A%2B919080106508%0AEMAIL%3Budhayam1794%40gmail.com%0AURL%3BTYPE%3DWORK%3Ahttps%3A%2F%2Fyaashtech.in%0AADR%3BTYPE%3DWORK%3A%3B%3BFlat%20No%20S1%2C%20May%20Flower%20Apartment%2C%20VGN%20Avenue%2CKumananchavadi%2CChennai%3BTamil%20Nadu%3B600056%3BIndia%0AEND%3AVCARD" alt="Yaashtech Contact VCard QR Code">
+            </div>
+            
+            <p style="font-size: 14px; color: #64748b;">Includes: Tech Support Line, Service Drop-off Address, Email, and Official Domain Routing Mapping Links.</p>
+            <a href="index.html" class="btn-action">Return to Hub Console</a>
+        </div>
+    </div>
+
+</body>
+</html>

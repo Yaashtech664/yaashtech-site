@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yaashtech | Laptop Servicing Center</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #000000;
+            color: #a0aab2;
+            line-height: 1.6;
+        }
+
+        header {
+            background-color: #000000;
+            border-bottom: 1px solid #111111;
+            padding: 10px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand-container { display: flex; align-items: center; gap: 12px; }
+        .brand-logo { width: 90px; height: 90px; object-fit: contain; display: block; }
+        .brand-name { color: #ffffff; font-size: 26px; font-weight: 700; }
+        .brand-name span { color: #00dcff; }
+        
+        .top-menu { display: flex; gap: 25px; align-items: center; }
+        .menu-link { color: #ffffff; text-decoration: none; font-weight: 700; font-size: 15px; }
+        .menu-link:hover { color: #00dcff; }
+        .menu-link.active-link { color: #00dcff; border-bottom: 2px solid #00dcff; padding-bottom: 4px; }
+
+        .container { max-width: 1000px; margin: 50px auto; padding: 0 5%; }
+        .back-link { display: inline-block; color: #00dcff; text-decoration: none; font-weight: 700; margin-bottom: 20px; }
+        
+        h1 { color: #ffffff; font-size: 36px; margin-bottom: 10px; font-weight: 800; }
+        .subtitle { color: #94a3b8; margin-bottom: 40px; }
+
+        .service-row {
+            background-color: #050505;
+            border: 1px solid #111111;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 25px;
+            display: flex;
+            gap: 25px;
+            align-items: flex-start;
+        }
+
+        .icon-box { font-size: 35px; background-color: #0a0a0a; padding: 15px; border-radius: 10px; border: 1px solid #222222; }
+        .details h3 { color: #ffffff; font-size: 20px; margin-bottom: 8px; }
+        .details p { color: #94a3b8; font-size: 15px; margin-bottom: 15px; }
+        
+        .spec-tag {
+            display: inline-block;
+            background-color: #0d1b2a;
+            color: #00dcff;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 20px;
+            border: 1px solid #005f73;
+        }
+
+        .btn-whatsapp {
+            display: inline-flex;
+            background-color: #00e676;
+            color: #000000;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 700;
+            margin-top: 30px;
+            align-items: center;
+            gap: 8px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="brand-container">
+            <img class="brand-logo" src="logo.png" alt="Yaashtech Logo">
+            <div class="brand-name">Yaash<span>tech</span></div>
+        </div>
+        <nav class="top-menu">
+            <a href="index.html" class="menu-link">Home</a>
+            <a href="laptop_service.html" class="menu-link active-link">Laptop Repair</a>
+            <a href="qr_generator.html" class="menu-link">QR Generator</a>
+            <a href="#" class="menu-link" style="opacity: 0.4; cursor: not-allowed;">Logistics</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <a href="index.html" class="back-link">← Return to Control Hub</a>
+        <h1>Premium Laptop Servicing Menu</h1>
+        <p class="subtitle">Professional hardware diagnostics, repairs, and optimization configurations for all major technical device brands.</p>
+
+        <div class="service-row">
+            <div class="icon-box">⚙️</div>
+            <div class="details">
+                <h3>Solid-State Drive (SSD) Speed Upgrades</h3>
+                <p>Swap out failing, sluggish legacy hard drives for modern high-speed NVMe solid-state storage architecture. Boosts device boot velocity by up to 10x.</p>
+                <span class="spec-tag">Performance Optimization</span>
+            </div>
+        </div>
+
+        <div class="service-row">
+            <div class="icon-box">💻</div>
+            <div class="details">
+                <h3>Operating System (OS) Deployment & Verification</h3>
+                <p>Clean system wiping, formatting, and fresh installations of Windows or macOS systems. Eliminates operational runtime registry conflicts, system freezes, and malware infections.</p>
+                <span class="spec-tag">System Restoration</span>
+            </div>
+        </div>
+
+        <div class="service-row">
+            <div class="icon-box">🧼</div>
+            <div class="details">
+                <h3>Thermal Maintenance & Dust Extraction</h3>
+                <p>Deep internal device opening, heavy dust removal from cooling fins, fan balance servicing, and premium thermal paste application to protect critical microprocessors from heat degradation.</p>
+                <span class="spec-tag">Preventative Engineering</span>
+            </div>
+        </div>
+
+        <center>
+            <a class="btn-whatsapp" href="https://wa.me/919080106508?text=Hi%20Yaashtech!%20I%20want%20to%20book%20a%20laptop%20service." target="_blank">
+                💬 Book a Servicing Appointment via WhatsApp
+            </a>
+        </center>
+    </div>
+
+</body>
+</html>

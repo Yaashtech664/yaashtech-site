@@ -2,63 +2,285 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Bullet Logistics India Pvt. Ltd. - Portal</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yaashtech | Master Business Portal</title>
     <style>
-        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 0; }
-        
-        /* Fixed Header & Navigation Menu */
-        .navbar { background-color: #1e3d59; display: flex; align-items: center; padding: 0 20px; height: 50px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
-        .navbar-brand { color: #fff; font-weight: bold; font-size: 18px; margin-right: 40px; }
-        .nav-menu { display: flex; list-style: none; margin: 0; padding: 0; height: 100%; }
-        .nav-item { position: relative; height: 100%; }
-        .nav-link { color: #e2e8f0; text-decoration: none; padding: 0 20px; display: flex; align-items: center; height: 100%; font-size: 14px; font-weight: 500; cursor: pointer; }
-        .nav-link:hover, .nav-item.active .nav-link { background-color: #17b978; color: #fff; }
-        
-        /* Dropdown Setup for All Masters Menu */
-        .dropdown-content { display: none; position: absolute; top: 50px; left: 0; background-color: #fff; min-width: 220px; box-shadow: 0 4px 8px rgba(0,0,0,0.15); border-radius: 0 0 4px 4px; z-index: 1000; }
-        .dropdown-content a { color: #333; padding: 12px 16px; text-decoration: none; display: block; font-size: 13px; border-bottom: 1px solid #f1f5f9; }
-        .dropdown-content a:hover { background-color: #f8fafc; color: #0056b3; }
-        .nav-item:hover .dropdown-content { display: block; }
+        /* Obsidian Black Enterprise UI System */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
-        /* Dynamic Main Workspace Frame Container */
-        .workspace-frame { width: 100%; height: calc(100vh - 54px); border: none; background: #f4f6f9; }
+        body {
+            background-color: #000000;
+            color: #a0aab2;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Borderless Multi-Navigation Header */
+        header {
+            background-color: #000000;
+            border-bottom: 1px solid #111111;
+            padding: 10px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .brand-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-logo {
+            width: 90px;
+            height: 90px;
+            object-fit: contain;
+            display: block;
+        }
+
+        .brand-name {
+            color: #ffffff;
+            font-size: 26px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .brand-name span {
+            color: #00dcff;
+        }
+
+        /* Bold Top Menu Layout */
+        .top-menu {
+            display: flex;
+            gap: 25px;
+            align-items: center;
+        }
+
+        .menu-link {
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 15px;
+            letter-spacing: 0.5px;
+            transition: color 0.2s;
+        }
+
+        .menu-link:hover {
+            color: #00dcff;
+        }
+
+        .menu-link.active-link {
+            color: #00dcff;
+            border-bottom: 2px solid #00dcff;
+            padding-bottom: 4px;
+        }
+
+        /* Welcome Center Banner */
+        .welcome-hero {
+            text-align: center;
+            padding: 60px 5% 30px 5%;
+            background: radial-gradient(circle at center, #0a0a0a 0%, #000000 100%);
+        }
+
+        .welcome-hero h1 {
+            color: #ffffff;
+            font-size: 46px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            margin-bottom: 15px;
+        }
+
+        .welcome-hero h1 span {
+            color: #00dcff;
+        }
+
+        .welcome-hero p {
+            font-size: 17px;
+            color: #94a3b8;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Dynamic Main Workspace Hub */
+        .hub-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 5% 80px 5%;
+            flex: 1;
+            width: 100%;
+        }
+
+        .hub-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        /* Modern Tool Card Templates */
+        .hub-card {
+            background-color: #050505;
+            border: 1px solid #111111;
+            border-radius: 14px;
+            padding: 35px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+        }
+
+        .hub-card:hover {
+            border-color: #00dcff;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 220, 255, 0.05);
+        }
+
+        .hub-card.disabled-card:hover {
+            border-color: #ff3d00;
+            box-shadow: 0 10px 20px rgba(255, 61, 0, 0.05);
+        }
+
+        .card-meta {
+            margin-bottom: 25px;
+        }
+
+        .card-badge {
+            font-size: 36px;
+            margin-bottom: 15px;
+            display: inline-block;
+        }
+
+        .hub-card h2 {
+            color: #ffffff;
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .hub-card p {
+            font-size: 15px;
+            color: #94a3b8;
+        }
+
+        /* Enterprise Control Buttons */
+        .btn-enter {
+            display: block;
+            text-align: center;
+            background-color: #111111;
+            color: #00dcff;
+            text-decoration: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 14px;
+            border: 1px solid #222222;
+            transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+            margin-top: 20px;
+        }
+
+        .hub-card:hover .btn-enter {
+            background-color: #00dcff;
+            color: #000000;
+            border-color: #00dcff;
+        }
+
+        .btn-future {
+            display: block;
+            text-align: center;
+            background-color: #080302;
+            color: #ff3d00;
+            text-decoration: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 14px;
+            border: 1px dashed #331100;
+            margin-top: 20px;
+            cursor: not-allowed;
+        }
+
+        /* Responsive Layout Optimization */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+                padding: 20px 5%;
+            }
+            .top-menu {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 15px;
+            }
+            .welcome-hero h1 {
+                font-size: 34px;
+            }
+        }
     </style>
 </head>
 <body>
 
-<!-- Navigation Bar Menu Components -->
-<nav class="navbar">
-    <div class="navbar-brand">🚚 Bullet Logistics</div>
-    <ul class="nav-menu">
-        <!-- Booking Menu -->
-        <li class="nav-item active" id="btn-booking">
-            <a onclick="loadPage('booking_entry.html', 'btn-booking')" class="nav-link">Booking (GR Entry)</a>
-        </li>
-        <!-- All Masters Menu Dropdown -->
-        <li class="nav-item" id="btn-masters">
-            <a class="nav-link">All Masters ▾</a>
-            <div class="dropdown-content">
-                <a onclick="loadPage('masters_party.html', 'btn-masters')">Party / Customer Master</a>
-                <a onclick="loadPage('masters_general.html', 'btn-masters')">Branch & Route Master</a>
-                <a onclick="loadPage('masters_general.html', 'btn-masters')">Packing & Charge Configuration</a>
+    <header>
+        <div class="brand-container">
+            <img class="brand-logo" src="logo.png" alt="Yaashtech Logo">
+            <div class="brand-name">Yaash<span>tech</span></div>
+        </div>
+        <nav class="top-menu">
+            <a href="index.html" class="menu-link active-link">Home</a>
+            <a href="laptop_service.html" class="menu-link">Laptop Repair</a>
+            <a href="qr_generator.html" class="menu-link">QR Generator</a>
+            <a href="#" class="menu-link" style="opacity: 0.4; cursor: not-allowed;">Logistics</a>
+        </nav>
+    </header>
+
+    <main style="flex: 1;">
+        <section class="welcome-hero">
+            <h1>Welcome to <span>Yaashtech</span></h1>
+            <p>Select an operational management module from the infrastructure panel grid below to launch your workspace utility.</p>
+        </section>
+
+        <section class="hub-container">
+            <div class="hub-grid">
+                
+                <div class="hub-card">
+                    <div class="card-meta">
+                        <span class="card-badge">💻</span>
+                        <h2>Laptop Repair</h2>
+                        <p>Access our premium chip-level hardware servicing terminal, SSD speed upgrade options, and clean OS engine deployment files.</p>
+                    </div>
+                    <a href="laptop_service.html" class="btn-enter">Enter Service Terminal →</a>
+                </div>
+
+                <div class="hub-card">
+                    <div class="card-meta">
+                        <span class="card-badge">🔳</span>
+                        <h2>QR Code Generator</h2>
+                        <p>Generate secure, optimized VCard QR contact cards instantly to pass your phone number, brand URL, and address seamlessly onto mobile devices.</p>
+                    </div>
+                    <a href="qr_generator.html" class="btn-enter">Launch Generator Engine →</a>
+                </div>
+
+                <div class="hub-card disabled-card">
+                    <div class="card-meta">
+                        <span class="card-badge" style="filter: grayscale(100%);">📦</span>
+                        <h2>Logistics / Operations</h2>
+                        <p>Supply line management, automated order routing frameworks, and scheduling utilities. Locked under active internal development.</p>
+                    </div>
+                    <div class="btn-future">⚠️ Under Development</div>
+                </div>
+
             </div>
-        </li>
-        <li class="nav-item"><a class="nav-link">Tracking</a></li>
-        <li class="nav-item"><a class="nav-link">Reports</a></li>
-    </ul>
-</nav>
-
-<!-- App Content Display Viewport -->
-<iframe id="main-view" class="workspace-frame" src="booking_entry.html"></iframe>
-
-<script>
-    // Handles clean menu switching logic
-    function loadPage(pageUrl, navId) {
-        document.getElementById('main-view').src = pageUrl;
-        document.querySelectorAll('.nav-menu li').forEach(li => li.classList.remove('active'));
-        document.getElementById(navId).classList.add('active');
-    }
-</script>
+        </section>
+    </main>
 
 </body>
 </html>
