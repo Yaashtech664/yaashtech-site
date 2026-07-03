@@ -12,18 +12,17 @@ const fieldTemplates = {
         { id: 'phone1', label: '📞 Primary Mobile Number', value: '9080106508', placeholder: 'e.g., 9080106508 or +91...' },
         { id: 'phone2', label: '📱 Alternative Mobile Number', value: '7502608869', placeholder: 'e.g., 7502608869' },
         { id: 'email1', label: '✉️ Primary Email Address', value: 'udhayam1794@gmail.com', placeholder: 'e.g., name@domain.com' },
-        { id: 'email2', label: '📧 Alternative Email Address', value: 'info@domain.com', placeholder: 'e.g., info@domain.com' },
+        { id: 'email2', label: '📧 Alternative Email Address', value: 'udhay@bulletlogistics.in', placeholder: 'e.g., info@domain.com' },
         { id: 'website', label: '🌐 Website URL Name', value: 'https://yaashtech.in', placeholder: 'e.g., https://yaashtech.in', fullWidth: true },
         { id: 'address', label: '📍 Office Address', value: 'Flat No S1, May Flower Apartment, Vgn Avenue, Kumananchavadi, Chennai', placeholder: 'e.g., Kumananchavadi, Chennai', fullWidth: true },
         { id: 'pincode', label: '🧱 Pin Code', value: '600056', placeholder: 'e.g., 600056', fullWidth: false }
     ],
     whatsapp: [
-        { id: 'waPhone', label: '💬 WhatsApp Number', value: '', placeholder: 'e.g., 9080106508', fullWidth: true },
-        { id: 'waMessage', label: '📝 Pre-filled Message Text', value: '', placeholder: 'Type custom message text details here...', fullWidth: true }
+        { id: 'waPhone', label: '💬 WhatsApp Number', value: '9080106508', fullWidth: true, placeholder: 'e.g., 9080106508' },
+        { id: 'waMessage', label: '📝 Pre-filled Message Text', value: 'Hi Yaashtech! I want to enquire about laptop servicing.', fullWidth: true, placeholder: 'Type custom text...' }
     ]
 };
 
-// Generates structural grid inputs columns dynamically
 function buildForm() {
     const type = document.getElementById('qrType').value;
     const container = document.getElementById('formFields');
@@ -49,7 +48,6 @@ function buildForm() {
     generateQRCode();
 }
 
-// Automatically inserts international country symbols (+91)
 function formatCountryCode(numberString) {
     let cleanDigits = numberString.replace(/[^0-9+]/g, ''); 
     if (!cleanDigits) return "";
@@ -59,7 +57,6 @@ function formatCountryCode(numberString) {
     return cleanDigits;
 }
 
-// High-capacity compilation script engine with automated mapping integration loops
 function generateQRCode() {
     const type = document.getElementById('qrType').value;
     let finalPayload = "";
@@ -78,12 +75,9 @@ function generateQRCode() {
 
         const phone1 = formatCountryCode(rawPhone1);
         const phone2 = formatCountryCode(rawPhone2);
-
-        // Your exact custom Google Maps directions link URL hardcoded securely inside the vCard parameters array:
         const hardcodedMapsUrl = "https://maps.app.goo.gl/fst2opWs4GL17MobA";
 
         if(name || phone1) {
-            // Standard multi-field vCard string structure with dual TEL rows, website row, and dedicated URL navigation markers
             finalPayload = `BEGIN:VCARD\nVERSION:3.0\nN:${name};;;;\nFN:${name}\nORG:${company}\nTITLE:${title}\nTEL;TYPE=CELL,VOICE:${phone1}\nTEL;TYPE=WORK,FAX:${phone2}\nEMAIL;TYPE=PREF,INTERNET:${email1}\nEMAIL;TYPE=WORK,INTERNET:${email2}\nURL:${website}\nURL;TYPE=MAPS_LOCATION:${hardcodedMapsUrl}\nADR;TYPE=WORK:;;${address};;;${pincode};India\nEND:VCARD`;
         }
     } else {
@@ -96,7 +90,6 @@ function generateQRCode() {
     document.getElementById('rawPayload').value = finalPayload;
     qrContainer.innerHTML = "";
 
-    // 300x300 density layout with level M redundancy allows massive multi-line datasets to process and decode instantly
     qrCodeInstance = new QRCode(qrContainer, {
         text: finalPayload || "Yaashtech Engine Waiting...",
         width: 300,
@@ -122,7 +115,7 @@ function saveRecordToHistory() {
 
     const payloadDataStr = document.getElementById('rawPayload').value;
     if(!payloadDataStr) {
-        alert("Please fill out the forms blocks before committing records logs.");
+        alert("Please fill in fields before logging records.");
         return;
     }
 
@@ -192,6 +185,7 @@ window.loadPayloadBackToForm = function(recordId) {
     if(!record) return;
 
     editingRecordId = record.id;
+    document.getElementById('qrType').value = record.type;
     document.getElementById('logRecordBtn').innerText = "🔄 Update Entry";
     
     buildForm();
@@ -287,11 +281,9 @@ document.getElementById('importDatabaseFile').addEventListener('change', (event)
                     renderHistoryView();
                     alert("Backup logs successfully restored!");
                 }
-            } else {
-                alert("Invalid backup log structural formatting profile.");
             }
         } catch (err) {
-            alert("Execution critical error: failed parsing target JSON text file configuration data.");
+            alert("Error parsing backup JSON data.");
         }
     };
     reader.readAsText(file);
@@ -321,8 +313,6 @@ document.getElementById('downloadBtn').addEventListener('click', () => {
             finalDownloadLink.href = canvas.toDataURL("image/png");
             finalDownloadLink.click();
         };
-    } else {
-        alert("Please input data parameters.");
     }
 });
 
