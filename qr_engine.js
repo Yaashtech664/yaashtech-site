@@ -3,18 +3,19 @@ let qrCodeInstance = null;
 let qrHistory = JSON.parse(localStorage.getItem("yaashtech_clean_history")) || [];
 let editingRecordId = null;
 
-// Multi-Column Template Grid Array Mapping Symbols
+// Multi-Column Layout Configuration Grid Arrays
 const fieldTemplates = {
     vcard: [
         { id: 'name', label: '👤 Full Name', value: 'UDHAYAKUMAR S', placeholder: 'e.g., Udhayakumar S', fullWidth: true },
         { id: 'title', label: '💼 Job Title / Designation', value: 'HEAD IT', placeholder: 'e.g., Managing Director' },
         { id: 'company', label: '🏢 Company Name', value: 'BULLET LOGISTICS INDIA PRIVATE LIMITED', placeholder: 'e.g., Yaashtech' },
-        { id: 'phone1', label: '📞 Primary Mobile Number', value: '9080106508', placeholder: 'e.g., 9080106508 or +91...' },
+        { id: 'phone1', label: '📞 Primary Mobile Number', value: '9080106508', placeholder: 'e.g., 9080106508' },
         { id: 'phone2', label: '📱 Alternative Mobile Number', value: '7502608869', placeholder: 'e.g., 7502608869' },
         { id: 'email1', label: '✉️ Primary Email Address', value: 'udhayam1794@gmail.com', placeholder: 'e.g., name@domain.com' },
         { id: 'email2', label: '📧 Alternative Email Address', value: 'udhay@bulletlogistics.in', placeholder: 'e.g., info@domain.com' },
         { id: 'website', label: '🌐 Website URL Name', value: 'https://yaashtech.in', placeholder: 'e.g., https://yaashtech.in', fullWidth: true },
-        { id: 'address', label: '📍 Office Address', value: 'Flat No S1, May Flower Apartment, Vgn Avenue, Kumananchavadi, Chennai', placeholder: 'e.g., Kumananchavadi, Chennai', fullWidth: true },
+        { id: 'mapsLink', label: '🗺️ Google Maps Direction URL Link', value: 'https://maps.app.goo.gl/fst2op', placeholder: 'Paste Google Maps Share Link...', fullWidth: true },
+        { id: 'address', label: '📍 Office Address Text', value: 'Flat No S1, May Flower Apartment, Vgn Avenue, Kumananchavadi, Chennai', placeholder: 'e.g., Kumananchavadi, Chennai', fullWidth: true },
         { id: 'pincode', label: '🧱 Pin Code', value: '600056', placeholder: 'e.g., 600056', fullWidth: false }
     ],
     whatsapp: [
@@ -23,6 +24,7 @@ const fieldTemplates = {
     ]
 };
 
+// Generates structural fields forms blocks inputs markup
 function buildForm() {
     const type = document.getElementById('qrType').value;
     const container = document.getElementById('formFields');
@@ -57,6 +59,7 @@ function formatCountryCode(numberString) {
     return cleanDigits;
 }
 
+// Encrypts text datasets fields into raw context image strings
 function generateQRCode() {
     const type = document.getElementById('qrType').value;
     let finalPayload = "";
@@ -65,26 +68,24 @@ function generateQRCode() {
         const name = document.getElementById('name').value;
         const title = document.getElementById('title').value;
         const company = document.getElementById('company').value;
-        const rawPhone1 = document.getElementById('phone1').value;
-        const rawPhone2 = document.getElementById('phone2').value;
+        const phone1 = formatCountryCode(document.getElementById('phone1').value);
+        const phone2 = formatCountryCode(document.getElementById('phone2').value);
         const email1 = document.getElementById('email1').value;
         const email2 = document.getElementById('email2').value;
         const website = document.getElementById('website').value;
+        const mapsLink = document.getElementById('mapsLink').value;
         const address = document.getElementById('address').value;
         const pincode = document.getElementById('pincode').value;
 
-        const phone1 = formatCountryCode(rawPhone1);
-        const phone2 = formatCountryCode(rawPhone2);
-        const hardcodedMapsUrl = "https://maps.app.goo.gl/fst2opWs4GL17MobA";
-
-        if(name || phone1) {
-            finalPayload = `BEGIN:VCARD\nVERSION:3.0\nN:${name};;;;\nFN:${name}\nORG:${company}\nTITLE:${title}\nTEL;TYPE=CELL,VOICE:${phone1}\nTEL;TYPE=WORK,FAX:${phone2}\nEMAIL;TYPE=PREF,INTERNET:${email1}\nEMAIL;TYPE=WORK,INTERNET:${email2}\nURL:${website}\nURL;TYPE=MAPS_LOCATION:${hardcodedMapsUrl}\nADR;TYPE=WORK:;;${address};;;${pincode};India\nEND:VCARD`;
+        if (name || phone1) {
+            // High-capacity structured data mapping standard properties alongside native Android Custom Map Label groups
+            finalPayload = `BEGIN:VCARD\nVERSION:3.0\nN:${name};;;;\nFN:${name}\nORG:${company}\nTITLE:${title}\nTEL;TYPE=CELL,VOICE:${phone1}\nTEL;TYPE=WORK,VOICE:${phone2}\nEMAIL;TYPE=PREF,INTERNET:${email1}\nEMAIL;TYPE=WORK,INTERNET:${email2}\nURL;TYPE=WORK:${website}\nitem1.URL:${mapsLink}\nitem1.X-ABLabel:Google Maps Direction\nX-ANDROID-CUSTOM:vnd.android.cursor.item/website;${mapsLink};Google Maps Direction;;;;\nADR;TYPE=WORK:;;${address};;;${pincode};India\nEND:VCARD`;
         }
     } else {
         let rawWaPhone = document.getElementById('waPhone').value.replace(/[^0-9]/g, '');
         if (rawWaPhone.length === 10) rawWaPhone = "91" + rawWaPhone;
         const waMessage = encodeURIComponent(document.getElementById('waMessage').value);
-        if(rawWaPhone) finalPayload = `https://wa.me/${rawWaPhone}?text=${waMessage}`;
+        if (rawWaPhone) finalPayload = `https://wa.me/${rawWaPhone}?text=${waMessage}`;
     }
 
     document.getElementById('rawPayload').value = finalPayload;
@@ -100,6 +101,7 @@ function generateQRCode() {
     });
 }
 
+// 01. FIXED: Refreshes the contents block completely back to blank inputs state upon saving
 function saveRecordToHistory() {
     const type = document.getElementById('qrType').value;
     let titleIdentifier = "";
@@ -109,13 +111,13 @@ function saveRecordToHistory() {
         titleIdentifier = document.getElementById('name').value || "Blank Profile";
         descriptionMetadata = document.getElementById('company').value || "vCard Contact File";
     } else {
-        titleIdentifier = "+" + document.getElementById('waPhone').value.replace(/[^0-9]/g, '') || "WhatsApp Link";
+        titleIdentifier = "+" + document.getElementById('waPhone').value || "WhatsApp Link";
         descriptionMetadata = "Direct Chat Trigger Link";
     }
 
     const payloadDataStr = document.getElementById('rawPayload').value;
-    if(!payloadDataStr) {
-        alert("Please fill in fields before logging records.");
+    if (!payloadDataStr) {
+        alert("Please map parameter forms inputs fields data strings before tracking.");
         return;
     }
 
@@ -149,7 +151,19 @@ function saveRecordToHistory() {
 
     localStorage.setItem("yaashtech_clean_history", JSON.stringify(qrHistory));
     renderHistoryView();
-    buildForm();
+    
+    // Clear and wipe fields completely to show an empty form
+    clearAllFormFieldsInput();
+}
+
+function clearAllFormFieldsInput() {
+    editingRecordId = null;
+    const inputs = document.querySelectorAll('.input-trigger');
+    inputs.forEach(input => {
+        input.value = ""; // Overwrites text fields back to blank instantly
+    });
+    document.getElementById('logRecordBtn').innerText = "💾 Save to History";
+    generateQRCode();
 }
 
 function renderHistoryView() {
@@ -182,10 +196,9 @@ function renderHistoryView() {
 
 window.loadPayloadBackToForm = function(recordId) {
     const record = qrHistory.find(item => item.id === recordId);
-    if(!record) return;
+    if (!record) return;
 
     editingRecordId = record.id;
-    document.getElementById('qrType').value = record.type;
     document.getElementById('logRecordBtn').innerText = "🔄 Update Entry";
     
     buildForm();
@@ -196,29 +209,31 @@ window.loadPayloadBackToForm = function(recordId) {
         const orgM = payload.match(/ORG:(.*?)\n/);
         const titleM = payload.match(/TITLE:(.*?)\n/);
         const tel1M = payload.match(/TEL;TYPE=CELL,VOICE:(.*?)\n/);
-        const tel2M = payload.match(/TEL;TYPE=WORK,FAX:(.*?)\n/);
+        const tel2M = payload.match(/TEL;TYPE=WORK,VOICE:(.*?)\n/);
         const em1M = payload.match(/EMAIL;TYPE=PREF,INTERNET:(.*?)\n/);
         const em2M = payload.match(/EMAIL;TYPE=WORK,INTERNET:(.*?)\n/);
-        const webM = payload.match(/URL:(.*?)\n/);
+        const webM = payload.match(/URL;TYPE=WORK:(.*?)\n/);
+        const mapM = payload.match(/item1.URL:(.*?)\n/);
         const adrM = payload.match(/ADR;TYPE=WORK:;;(.*?);;;(.*?);India/);
 
-        if(nameM) document.getElementById('name').value = nameM[1];
-        if(titleM) document.getElementById('title').value = titleM[1];
-        if(orgM) document.getElementById('company').value = orgM[1];
-        if(tel1M) document.getElementById('phone1').value = tel1M[1];
-        if(tel2M) document.getElementById('phone2').value = tel2M[1];
-        if(em1M) document.getElementById('email1').value = em1M[1];
-        if(em2M) document.getElementById('email2').value = em2M[1];
-        if(webM) document.getElementById('website').value = webM[1];
-        if(adrM) {
+        if (nameM) document.getElementById('name').value = nameM[1];
+        if (titleM) document.getElementById('title').value = titleM[1];
+        if (orgM) document.getElementById('company').value = orgM[1];
+        if (tel1M) document.getElementById('phone1').value = tel1M[1];
+        if (tel2M) document.getElementById('phone2').value = tel2M[1];
+        if (em1M) document.getElementById('email1').value = em1M[1];
+        if (em2M) document.getElementById('email2').value = em2M[1];
+        if (webM) document.getElementById('website').value = webM[1];
+        if (mapM) document.getElementById('mapsLink').value = mapM[1];
+        if (adrM) {
             document.getElementById('address').value = adrM[1];
             document.getElementById('pincode').value = adrM[2];
         }
     } else {
         const phoneM = payload.match(/wa\.me\/(.*?)\?/);
         const msgM = payload.match(/\?text=(.*)/);
-        if(phoneM) document.getElementById('waPhone').value = phoneM[1];
-        if(msgM) document.getElementById('waMessage').value = decodeURIComponent(msgM[1]);
+        if (phoneM) document.getElementById('waPhone').value = phoneM[1];
+        if (msgM) document.getElementById('waMessage').value = decodeURIComponent(msgM[1]);
     }
 
     document.getElementById('rawPayload').value = payload;
@@ -237,7 +252,7 @@ window.deleteSingleRecord = function(recordId) {
     qrHistory = qrHistory.filter(item => item.id !== recordId);
     localStorage.setItem("yaashtech_clean_history", JSON.stringify(qrHistory));
     renderHistoryView();
-    if(editingRecordId === recordId) buildForm();
+    if (editingRecordId === recordId) clearAllFormFieldsInput();
 };
 
 document.getElementById('clearHistoryBtn').addEventListener('click', () => {
@@ -245,7 +260,7 @@ document.getElementById('clearHistoryBtn').addEventListener('click', () => {
         qrHistory = [];
         localStorage.removeItem("yaashtech_clean_history");
         renderHistoryView();
-        buildForm();
+        clearAllFormFieldsInput();
     }
 });
 
