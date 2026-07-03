@@ -3,33 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Yaashtech | Advanced Multi-Column QR Portal</title>
-    <!-- Load Tailwind CSS for clean, modern styling -->
+    <title>Yaashtech | Enterprise QR Suite</title>
+    <!-- Load Tailwind CSS for modern responsive styling -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <!-- Load the QR Code library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <!-- Load the advanced feature-rich QR Code Styling Engine library -->
+    <script src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
     <style>
-        body {
-            background-color: #000000;
-            color: #a0aab2;
-        }
-        .focus-cyan:focus {
-            border-color: #00dcff !important;
-            box-shadow: 0 0 0 2px rgba(0, 220, 255, 0.2) !important;
-        }
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #050505;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #222222;
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #00dcff;
-        }
+        body { background-color: #000000; color: #a0aab2; }
+        .focus-cyan:focus { border-color: #00dcff !important; box-shadow: 0 0 0 2px rgba(0, 220, 255, 0.2) !important; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #050505; }
+        ::-webkit-scrollbar-thumb { background: #222222; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #00dcff; }
     </style>
 </head>
 <body class="font-sans min-h-screen pb-10">
@@ -49,72 +34,129 @@
     </header>
 
     <div class="max-w-7xl mx-auto mt-10 px-4">
-        <div class="grid grid-cols-1 xl:grid-cols-4 gap-8">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
             
-            <!-- COLUMN 1 & 2: Two-Column Blank Form Field Grid -->
-            <div class="xl:col-span-2 bg-zinc-950 rounded-2xl border border-zinc-900 p-6 space-y-6 shadow-xl h-fit">
-                <div>
-                    <label class="block text-sm font-semibold text-zinc-300 mb-2">Select QR Code Type</label>
-                    <select id="qrType" class="w-full bg-black text-white border border-zinc-800 rounded-lg p-2.5 shadow-sm focus:ring-2 focus:ring-[#00dcff] focus:border-[#00dcff] transition-all outline-none">
-                        <option value="vcard">Save Contact (Multi-Line Column vCard)</option>
-                        <option value="whatsapp">Direct WhatsApp Chat Link</option>
-                    </select>
+            <!-- CONTROLS CONTAINER (Takes 7 columns spaces) -->
+            <div class="lg:col-span-7 space-y-6">
+                
+                <!-- 1. Selection & Core Inputs -->
+                <div class="bg-zinc-950 border border-zinc-900 rounded-2xl p-6 space-y-4 shadow-xl">
+                    <h3 class="text-white font-bold text-sm uppercase tracking-wider text-[#00dcff]">1. Configuration Data Profile</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="flex flex-col">
+                            <label class="text-xs font-semibold text-zinc-400 mb-1">🔗 Target Web URL / Text Link</label>
+                            <input type="text" id="qrText" placeholder="e.g., https://yaashtech.in" class="w-full bg-black text-white border border-zinc-800 rounded-lg p-2 text-sm focus:outline-none focus-cyan transition-all qr-input">
+                        </div>
+                        <div class="flex flex-col">
+                            <label class="text-xs font-semibold text-zinc-400 mb-1">💬 Multi-Data: Primary WhatsApp Number</label>
+                            <input type="text" id="qrPhone" placeholder="e.g., 9080106508" class="w-full bg-black text-white border border-zinc-800 rounded-lg p-2 text-sm focus:outline-none focus-cyan transition-all qr-input">
+                        </div>
+                        <div class="flex flex-col md:col-span-2">
+                            <label class="text-xs font-semibold text-zinc-400 mb-1">✉️ Multi-Data: Contact Email Address</label>
+                            <input type="text" id="qrEmail" placeholder="e.g., info@yaashtech.in" class="w-full bg-black text-white border border-zinc-800 rounded-lg p-2 text-sm focus:outline-none focus-cyan transition-all qr-input">
+                        </div>
+                    </div>
                 </div>
 
-                <hr class="border-zinc-900">
+                <!-- 2. Brand Customization Options -->
+                <div class="bg-zinc-950 border border-zinc-900 rounded-2xl p-6 space-y-4 shadow-xl">
+                    <h3 class="text-white font-bold text-sm uppercase tracking-wider text-[#00dcff]">2. Brand Customization & Styling</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="flex flex-col">
+                            <label class="text-xs font-semibold text-zinc-400 mb-1">🔳 Dot Matrix Color</label>
+                            <input type="color" id="dotColor" value="#000000" class="w-full bg-black border border-zinc-800 rounded-lg h-9 p-1 cursor-pointer qr-input">
+                        </div>
+                        <div class="flex flex-col">
+                            <label class="text-xs font-semibold text-zinc-400 mb-1">🎨 Dot Pattern Style</label>
+                            <select id="dotType" class="w-full bg-black text-white border border-zinc-800 rounded-lg p-2 text-sm outline-none focus:ring-1 focus:ring-[#00dcff] qr-input">
+                                <option value="square">Classic Square</option>
+                                <option value="dots">Rounded Dots</option>
+                                <option value="rounded">Smooth Edges</option>
+                                <option value="classy">Modern Technical</option>
+                            </select>
+                        </div>
+                        <div class="flex flex-col">
+                            <label class="text-xs font-semibold text-zinc-400 mb-1">🛡️ Error Tolerance Level</label>
+                            <select id="errorLevel" class="w-full bg-black text-white border border-zinc-800 rounded-lg p-2 text-sm outline-none focus:ring-1 focus:ring-[#00dcff] qr-input">
+                                <option value="M">Medium (Standard)</option>
+                                <option value="H">High Capacity (Best for Logos)</option>
+                            </select>
+                        </div>
+                        <div class="flex flex-col md:col-span-3">
+                            <label class="text-xs font-semibold text-zinc-400 mb-1">🖼️ Center Brand Branding Logo (URL Image)</label>
+                            <input type="text" id="logoUrl" placeholder="Paste image path link or leave blank for default circuit logo" class="w-full bg-black text-white border border-zinc-800 rounded-lg p-2 text-sm focus:outline-none focus-cyan transition-all qr-input">
+                        </div>
+                    </div>
+                </div>
 
-                <!-- Input elements are loaded empty here -->
-                <div id="formFields" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+                <!-- 3. Security Systems Layout -->
+                <div class="bg-zinc-950 border border-zinc-900 rounded-2xl p-6 space-y-4 shadow-xl">
+                    <h3 class="text-white font-bold text-sm uppercase tracking-wider text-[#00dcff]">3. Enterprise Security Shield</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="flex flex-col">
+                            <label class="text-xs font-semibold text-zinc-400 mb-1">🔑 Access Password Shield</label>
+                            <input type="password" id="qrPassword" placeholder="Leave empty for public open access" class="w-full bg-black text-white border border-zinc-800 rounded-lg p-2 text-sm focus:outline-none focus-cyan transition-all qr-input">
+                        </div>
+                        <div class="flex flex-col">
+                            <label class="text-xs font-semibold text-zinc-400 mb-1">⏳ Platform System Expiry Date</label>
+                            <input type="date" id="expiryDate" class="w-full bg-black text-white border border-zinc-800 rounded-lg p-2 text-sm focus:outline-none focus-cyan transition-all qr-input">
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
-            <!-- COLUMN 3: High-Capacity 300x300 Canvas Engine View -->
-            <div class="bg-zinc-950 rounded-2xl border border-zinc-900 p-6 flex flex-col items-center justify-center text-center shadow-xl min-h-[480px] h-fit">
-                <span class="text-xs font-bold uppercase tracking-wider text-[#00dcff] mb-4">High-Capacity Instant Scan Frame</span>
+            <!-- LIVE CANVAS & HISTORY ENGINE LAYOUT (Takes 5 columns spaces) -->
+            <div class="lg:col-span-5 space-y-6">
                 
-                <div id="qrcode" class="bg-white p-4 rounded-xl shadow-md border border-zinc-200 inline-block"></div>
-                
-                <div class="mt-6 text-center w-full">
-                    <p id="qrStatusLabel" class="text-xs font-medium text-zinc-400 mb-2 uppercase tracking-wide">Data Encoded:</p>
-                    <textarea id="rawPayload" readonly class="w-full text-xs font-mono bg-black border border-zinc-900 rounded-md p-2 h-20 resize-none focus:outline-none text-zinc-500"></textarea>
+                <!-- Target Visual Matrix Frame Output -->
+                <div class="bg-zinc-950 border border-zinc-900 rounded-2xl p-6 flex flex-col items-center justify-center text-center shadow-xl">
+                    <span class="text-xs font-bold uppercase tracking-wider text-[#00dcff] mb-4">Live Preview Scan Frame</span>
+                    
+                    <!-- Rendering target framework container element -->
+                    <div id="qrcode" class="bg-white p-3 rounded-xl inline-block shadow-md"></div>
+                    
+                    <!-- Dynamic Cloud Activation Indicator Shield -->
+                    <div id="statusIndicator" class="mt-4 text-xs font-bold px-3 py-1 rounded-full bg-emerald-950/50 text-emerald-400 border border-emerald-900">
+                        🟢 Mode: Dynamic Live Sync Active
+                    </div>
+
+                    <div class="flex gap-3 w-full mt-5">
+                        <button id="downloadBtn" class="flex-1 bg-[#00dcff] hover:bg-[#00b2cc] text-black font-bold text-sm py-2.5 px-4 rounded-lg transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md">
+                            📥 Download Vector PNG
+                        </button>
+                        <button id="saveHistoryBtn" class="bg-zinc-900 hover:bg-zinc-800 text-white border border-zinc-800 font-bold text-sm py-2.5 px-4 rounded-lg transition-all cursor-pointer">
+                            💾 Commit to History
+                        </button>
+                    </div>
                 </div>
-                
-                <div class="flex gap-3 w-full mt-4">
-                    <button id="downloadBtn" class="flex-1 bg-[#00dcff] hover:bg-[#00b2cc] text-black font-bold text-sm py-2.5 px-4 rounded-lg transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md">
-                        📥 Download + Border
-                    </button>
-                    <button id="logRecordBtn" class="bg-zinc-900 hover:bg-zinc-800 text-white border border-zinc-800 font-bold text-sm py-2.5 px-4 rounded-lg transition-all cursor-pointer">
-                        💾 Save to History
-                    </button>
+
+                <!-- Active History Logs List Database Tracker -->
+                <div class="bg-zinc-950 border border-zinc-900 rounded-2xl p-6 flex flex-col shadow-xl max-h-[460px]">
+                    <div class="flex justify-between items-center mb-3">
+                        <h2 class="text-white font-bold text-sm tracking-wide">📜 History Database Management Logs</h2>
+                        <button id="clearHistoryBtn" class="text-xs text-red-400 hover:text-red-500 font-bold cursor-pointer transition-colors">Clear</button>
+                    </div>
+
+                    <!-- File system storage interface controls -->
+                    <div class="grid grid-cols-2 gap-2 mb-4">
+                        <button id="exportDatabaseBtn" class="bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-800 font-bold text-xs py-1.5 px-2 rounded-lg transition-all cursor-pointer">📤 Backup Logs</button>
+                        <label class="bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-800 font-bold text-xs py-1.5 px-2 rounded-lg transition-all cursor-pointer text-center block">
+                            📥 Restore Logs
+                            <input type="file" id="importDatabaseFile" class="hidden" accept=".json">
+                        </label>
+                    </div>
+
+                    <div id="historyLogList" class="space-y-3 overflow-y-auto flex-1 pr-1 text-left">
+                        <!-- Items rendered dynamically via standalone core engine -->
+                    </div>
                 </div>
+
             </div>
-
-            <!-- COLUMN 4: Active History Manager with Dedicated JSON Backup Actions -->
-            <div class="bg-zinc-950 rounded-2xl border border-zinc-900 p-6 flex flex-col shadow-xl max-h-[620px] h-fit xl:h-auto">
-                <div class="flex justify-between items-center mb-3">
-                    <h2 class="text-white font-bold text-md tracking-wide">📜 Active History Logs</h2>
-                    <button id="clearHistoryBtn" class="text-xs text-red-400 hover:text-red-500 font-bold cursor-pointer transition-colors">Clear All</button>
-                </div>
-
-                <!-- File Backup/Restore Management Action Buttons -->
-                <div class="grid grid-cols-2 gap-2 mb-4">
-                    <button id="exportDatabaseBtn" class="bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-800 font-bold text-xs py-1.5 px-2 rounded-lg transition-all cursor-pointer">
-                        📤 Backup Logs
-                    </button>
-                    <label class="bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-800 font-bold text-xs py-1.5 px-2 rounded-lg transition-all cursor-pointer text-center block">
-                        📥 Restore Logs
-                        <input type="file" id="importDatabaseFile" class="hidden" accept=".json">
-                    </label>
-                </div>
-                
-                <div id="historyLogList" class="space-y-3 overflow-y-auto flex-1 pr-1 text-left">
-                    <!-- Javascript appends logged items items here -->
-                </div>
-            </div>
-
         </div>
     </div>
 
-    <!-- Link to the separate external database logic file -->
+    <!-- Wire your independent, isolated logic processing file module -->
     <script src="qr_engine.js"></script>
 </body>
 </html>
