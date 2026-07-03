@@ -3,19 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Yaashtech | Business Card QR Code Generator</title>
+    <title>Yaashtech | Advanced Business QR Engine</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
-        /* Modern Obsidian Black Core Overrides */
         body {
             background-color: #000000;
             color: #a0aab2;
         }
-        /* Custom input focus rules matching your electric cyan aesthetic */
         .focus-cyan:focus {
             border-color: #00dcff !important;
             box-shadow: 0 0 0 2px rgba(0, 220, 255, 0.2) !important;
+        }
+        /* Custom scrollbar styling for history panel */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #050505;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #222222;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00dcff;
         }
     </style>
 </head>
@@ -24,7 +36,7 @@
     <header class="bg-black border-b border-zinc-900 px-[5%] py-2.5 flex flex-col md:flex-row justify-between items-center sticky top-0 z-50 gap-4 md:gap-0">
         <div class="flex items-center gap-3">
             <img class="w-[90px] h-[90px] object-contain block" src="logo.png" alt="Yaashtech Logo">
-            <div class="text-white text-26px font-bold tracking-[0.5px]">Yaash<span class="text-[#00dcff]">tech</span></div>
+            <div class="text-white text-[26px] font-bold tracking-[0.5px]">Yaash<span class="text-[#00dcff]">tech</span></div>
         </div>
         <nav class="flex gap-6 items-center">
             <a href="index.html" class="text-white hover:text-[#00dcff] font-bold text-[15px] tracking-[0.5px] transition-colors">Home</a>
@@ -34,16 +46,10 @@
         </nav>
     </header>
 
-    <div class="max-w-5xl mx-auto mt-10 bg-zinc-950 rounded-2xl border border-zinc-900 overflow-hidden shadow-xl">
-        
-        <div class="bg-gradient-to-r from-zinc-900 to-black text-white p-6 text-center border-b border-zinc-900">
-            <h1 class="text-2xl font-bold tracking-tight">Business Card QR Code Generator</h1>
-            <p class="text-[#00dcff] text-sm mt-1">Dynamic real-time QR creation for Contact vCards and WhatsApp Links</p>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 p-6 md:p-8">
+    <div class="max-w-6xl mx-auto mt-10 px-4">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             
-            <div class="space-y-6">
+            <div class="bg-zinc-950 rounded-2xl border border-zinc-900 p-6 space-y-6 shadow-xl h-fit">
                 <div>
                     <label class="block text-sm font-semibold text-zinc-300 mb-2">Select QR Code Type</label>
                     <select id="qrType" class="w-full bg-black text-white border border-zinc-800 rounded-lg p-2.5 shadow-sm focus:ring-2 focus:ring-[#00dcff] focus:border-[#00dcff] transition-all outline-none">
@@ -54,23 +60,41 @@
 
                 <hr class="border-zinc-900">
 
-                <div id="formFields" class="space-y-4">
-                    </div>
+                <div id="formFields" class="space-y-4"></div>
             </div>
 
-            <div class="flex flex-col items-center justify-center bg-black rounded-xl p-6 border border-dashed border-zinc-800 min-h-[400px]">
+            <div class="bg-zinc-950 rounded-2xl border border-zinc-900 p-6 flex flex-col items-center justify-center text-center shadow-xl min-h-[450px] h-fit">
                 <span class="text-xs font-bold uppercase tracking-wider text-[#00dcff] mb-4">Live Preview Scan Test</span>
                 
                 <div id="qrcode" class="bg-white p-4 rounded-xl shadow-md border border-zinc-200 inline-block"></div>
                 
-                <div class="mt-6 text-center w-full max-w-sm">
+                <div class="mt-6 text-center w-full">
                     <p id="qrStatusLabel" class="text-xs font-medium text-zinc-400 mb-2 uppercase tracking-wide">Data Encoded:</p>
-                    <textarea id="rawPayload" readonly class="w-full text-xs font-mono bg-zinc-950 border border-zinc-900 rounded-md p-2 h-24 resize-none focus:outline-none text-zinc-500"></textarea>
+                    <textarea id="rawPayload" readonly class="w-full text-xs font-mono bg-black border border-zinc-900 rounded-md p-2 h-20 resize-none focus:outline-none text-zinc-500"></textarea>
                 </div>
                 
-                <button id="downloadBtn" class="mt-4 bg-[#00dcff] hover:bg-[#00b2cc] text-black font-bold text-sm py-2.5 px-5 rounded-lg transition-all flex items-center gap-2 cursor-pointer shadow-md">
-                    📥 Download QR Image
-                </button>
+                <div class="flex gap-3 w-full mt-4">
+                    <button id="downloadBtn" class="flex-1 bg-[#00dcff] hover:bg-[#00b2cc] text-black font-bold text-sm py-2.5 px-4 rounded-lg transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md">
+                        📥 Download PNG
+                    </button>
+                    <button id="logRecordBtn" class="bg-zinc-900 hover:bg-zinc-800 text-white border border-zinc-800 font-bold text-sm py-2.5 px-4 rounded-lg transition-all cursor-pointer">
+                        💾 Log to History
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-zinc-950 rounded-2xl border border-zinc-900 p-6 flex flex-col shadow-xl max-h-[520px]">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-white font-bold text-md tracking-wide flex items-center gap-2">
+                        📜 History Tracker Database
+                    </h2>
+                    <button id="clearHistoryBtn" class="text-xs text-red-400 hover:text-red-500 font-bold cursor-pointer transition-colors">
+                        Clear All
+                    </button>
+                </div>
+                
+                <div id="historyLogList" class="space-y-3 overflow-y-auto flex-1 pr-1 text-left">
+                    </div>
             </div>
 
         </div>
@@ -79,25 +103,26 @@
     <script>
         let qrContainer = document.getElementById("qrcode");
         let qrCodeInstance = null;
+        let qrHistory = JSON.parse(localStorage.getItem("yaashtech_qr_history")) || [];
 
-        // Structured templates for local field mapping inputs
+        // Dynamic input key templates layout mapping state values
         const fieldTemplates = {
             vcard: [
                 { id: 'name', label: 'Full Name', value: 'Iyyanar', placeholder: 'e.g., Iyyanar' },
                 { id: 'title', label: 'Job Title / Designation', value: 'Managing Director', placeholder: 'e.g., Managing Director' },
                 { id: 'company', label: 'Company Name', value: 'Bullet Trans Solutions Private Limited', placeholder: 'e.g., Bullet Trans' },
-                { id: 'phone', label: 'Mobile Number (With Country Code)', value: '+919344590431', placeholder: 'e.g., +919344590431' },
+                { id: 'phone', label: 'Mobile Number', value: '+919344590431', placeholder: 'e.g., +919344590431' },
                 { id: 'email', label: 'Email Address', value: 'Iyyanar@bullettrans.in', placeholder: 'e.g., name@domain.com' },
                 { id: 'address', label: 'Office Address', value: 'No.112/B, P H Road, Velappanchavadi, Chennai', placeholder: 'Street, City' },
                 { id: 'pincode', label: 'Pin Code', value: '600077', placeholder: '600077' }
             ],
             whatsapp: [
-                { id: 'waPhone', label: 'WhatsApp Phone Number (Numbers only with country code)', value: '919344590431', placeholder: 'e.g., 919344590431' },
-                { id: 'waMessage', label: 'Default Pre-filled Message Text', value: 'Hello Sir, I would like to enquire about your logistics and transport services.', placeholder: 'Type custom text...' }
+                { id: 'waPhone', label: 'WhatsApp Phone Number (With Country Code)', value: '919344590431', placeholder: 'e.g., 919344590431' },
+                { id: 'waMessage', label: 'Pre-filled Message Text', value: 'Hello Sir, I would like to enquire about your logistics and transport services.', placeholder: 'Type custom text...' }
             ]
         };
 
-        // Standard functional form inputs element insertion engine
+        // Generates structural fields forms blocks inputs markup
         function buildForm() {
             const type = document.getElementById('qrType').value;
             const container = document.getElementById('formFields');
@@ -106,7 +131,6 @@
             fieldTemplates[type].forEach(field => {
                 const wrapper = document.createElement('div');
                 wrapper.className = 'flex flex-col';
-                
                 wrapper.innerHTML = `
                     <label class="text-xs font-semibold text-zinc-400 mb-1">${field.label}</label>
                     <input type="text" id="${field.id}" value="${field.value}" placeholder="${field.placeholder}" 
@@ -115,7 +139,6 @@
                 container.appendChild(wrapper);
             });
 
-            // Bind listeners across dynamic trigger array loops
             document.querySelectorAll('.input-trigger').forEach(input => {
                 input.addEventListener('input', generateQRCode);
             });
@@ -123,7 +146,7 @@
             generateQRCode();
         }
 
-        // Processing payload and injects frame image strings onto the wrapper shell matrix
+        // Encrypts text datasets fields into raw context image strings
         function generateQRCode() {
             const type = document.getElementById('qrType').value;
             let finalPayload = "";
@@ -137,25 +160,18 @@
                 const address = document.getElementById('address').value;
                 const pincode = document.getElementById('pincode').value;
 
-                // Build standardized vCard contact profile layout block strings
                 finalPayload = `BEGIN:VCARD\nVERSION:3.0\nN:${name};;;;\nFN:${name}\nORG:${company}\nTITLE:${title}\nTEL;TYPE=CELL,VOICE:${phone}\nEMAIL;TYPE=PREF,INTERNET:${email}\nADR;TYPE=WORK:;;${address};;;${pincode};India\nEND:VCARD`;
                 document.getElementById('qrStatusLabel').innerText = "Raw vCard Contact Payload:";
             } else {
                 const waPhone = document.getElementById('waPhone').value.replace(/[^0-9]/g, '');
                 const waMessage = encodeURIComponent(document.getElementById('waMessage').value);
-                
-                // Build standardized WhatsApp communication parameters string links
                 finalPayload = `https://wa.me/${waPhone}?text=${waMessage}`;
                 document.getElementById('qrStatusLabel').innerText = "Direct WhatsApp Target URL:";
             }
 
-            // Injects visual parameters debugging logs text panel values
             document.getElementById('rawPayload').value = finalPayload;
-
-            // Wipes existing image node elements clean before running canvas calculations
             qrContainer.innerHTML = "";
 
-            // Re-render layout execution engine tracking object values
             qrCodeInstance = new QRCode(qrContainer, {
                 text: finalPayload,
                 width: 200,
@@ -166,7 +182,147 @@
             });
         }
 
-        // Image file output rendering and click stream downloads handling logic
+        // Stores unique encrypted records items into database array arrays
+        function saveRecordToHistory() {
+            const type = document.getElementById('qrType').value;
+            let titleIdentifier = "";
+            let descriptionMetadata = "";
+
+            if (type === 'vcard') {
+                titleIdentifier = document.getElementById('name').value || "Unnamed Profile";
+                descriptionMetadata = document.getElementById('company').value || "vCard Contact Record";
+            } else {
+                titleIdentifier = "+" + document.getElementById('waPhone').value || "WhatsApp Link";
+                descriptionMetadata = "Direct Chat Trigger Core";
+            }
+
+            const payloadDataStr = document.getElementById('rawPayload').value;
+            const newRecordObj = {
+                id: Date.now(),
+                type: type,
+                title: titleIdentifier,
+                desc: descriptionMetadata,
+                payload: payloadDataStr,
+                timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            };
+
+            qrHistory.unshift(newRecordObj);
+            localStorage.setItem("yaashtech_qr_history", JSON.stringify(qrHistory));
+            renderHistoryView();
+        }
+
+        // Redraws tracking items templates logs elements down the panel list
+        function renderHistoryView() {
+            const viewportList = document.getElementById('historyLogList');
+            viewportList.innerHTML = "";
+
+            if (qrHistory.length === 0) {
+                viewportList.innerHTML = `
+                    <div class="text-center py-10 text-zinc-600 text-sm italic">
+                        No encoded history logs saved inside storage memory yet.
+                    </div>`;
+                return;
+            }
+
+            qrHistory.forEach(record => {
+                const logCard = document.createElement('div');
+                logCard.className = "bg-black border border-zinc-900 rounded-xl p-3.5 flex flex-col justify-between hover:border-zinc-800 transition-all relative group";
+                logCard.innerHTML = `
+                    <div class="pr-6 cursor-pointer" onclick="loadPayloadBackToEngine('${encodeURIComponent(record.payload)}', '${record.type}')">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="text-xs font-bold uppercase px-1.5 py-0.5 rounded bg-zinc-900 text-[#00dcff]">${record.type}</span>
+                            <span class="text-zinc-500 text-[11px] font-medium ml-auto">${record.timestamp}</span>
+                        </div>
+                        <h4 class="text-white text-sm font-bold truncate">${record.title}</h4>
+                        <p class="text-zinc-400 text-xs truncate mt-0.5">${record.desc}</p>
+                    </div>
+                    <button onclick="deleteSingleRecord(${record.id})" class="absolute top-3.5 right-3 text-zinc-600 hover:text-red-400 text-xs transition-colors cursor-pointer opacity-0 group-hover:opacity-100 focus:opacity-100">
+                        ✕
+                    </button>
+                `;
+                viewportList.appendChild(logCard);
+            });
+        }
+
+        // Loads historic payload strings back into active variables layout views
+        window.loadPayloadBackToEngine = function(encodedPayload, recordType) {
+            const rawTextPayloadString = decodeURIComponent(encodedPayload);
+            document.getElementById('qrType').value = recordType;
+            
+            // Rebuild configuration inputs dynamically to prevent mismatches
+            const container = document.getElementById('formFields');
+            container.innerHTML = '';
+            
+            fieldTemplates[recordType].forEach(field => {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'flex flex-col';
+                wrapper.innerHTML = `
+                    <label class="text-xs font-semibold text-zinc-400 mb-1">${field.label}</label>
+                    <input type="text" id="${field.id}" placeholder="${field.placeholder}" 
+                           class="w-full bg-black text-white border border-zinc-800 rounded-lg p-2 text-sm focus:outline-none transition-all focus:border-[#00dcff] input-trigger focus-cyan">
+                `;
+                container.appendChild(wrapper);
+            });
+
+            // Parse text values back inside mapped controls
+            if (recordType === 'vcard') {
+                const nameMatch = rawTextPayloadString.match(/FN:(.*?)\n/);
+                const orgMatch = rawTextPayloadString.match(/ORG:(.*?)\n/);
+                const titleMatch = rawTextPayloadString.match(/TITLE:(.*?)\n/);
+                const telMatch = rawTextPayloadString.match(/TEL;TYPE=CELL,VOICE:(.*?)\n/);
+                const emailMatch = rawTextPayloadString.match(/EMAIL;TYPE=PREF,INTERNET:(.*?)\n/);
+                const adrMatch = rawTextPayloadString.match(/ADR;TYPE=WORK:;;(.*?);;;(.*?);India/);
+
+                if(nameMatch) document.getElementById('name').value = nameMatch[1];
+                if(titleMatch) document.getElementById('title').value = titleMatch[1];
+                if(orgMatch) document.getElementById('company').value = orgMatch[1];
+                if(telMatch) document.getElementById('phone').value = telMatch[1];
+                if(emailMatch) document.getElementById('email').value = emailMatch[1];
+                if(adrMatch) {
+                    document.getElementById('address').value = adrMatch[1];
+                    document.getElementById('pincode').value = adrMatch[2];
+                }
+            } else {
+                const phoneMatch = rawTextPayloadString.match(/wa\.me\/(.*?)\?/);
+                const msgMatch = rawTextPayloadString.match(/\?text=(.*)/);
+                if(phoneMatch) document.getElementById('waPhone').value = phoneMatch[1];
+                if(msgMatch) document.getElementById('waMessage').value = decodeURIComponent(msgMatch[1]);
+            }
+
+            // Re-bind listeners
+            document.querySelectorAll('.input-trigger').forEach(input => {
+                input.addEventListener('input', generateQRCode);
+            });
+
+            document.getElementById('rawPayload').value = rawTextPayloadString;
+            qrContainer.innerHTML = "";
+            qrCodeInstance = new QRCode(qrContainer, {
+                text: rawTextPayloadString,
+                width: 200,
+                height: 200,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
+            });
+        };
+
+        // Removes unique tracking elements nodes rows
+        window.deleteSingleRecord = function(recordId) {
+            qrHistory = qrHistory.filter(item => item.id !== recordId);
+            localStorage.setItem("yaashtech_qr_history", JSON.stringify(qrHistory));
+            renderHistoryView();
+        };
+
+        // Clear all tracking files entirely inside device local data tables
+        document.getElementById('clearHistoryBtn').addEventListener('click', () => {
+            if (confirm("Are you sure you want to permanently wipe all saved history logs?")) {
+                qrHistory = [];
+                localStorage.removeItem("yaashtech_qr_history");
+                renderHistoryView();
+            }
+        });
+
+        // Download functionality handling standard PNG output capture stream
         document.getElementById('downloadBtn').addEventListener('click', () => {
             const img = qrContainer.querySelector('img');
             if (img) {
@@ -179,9 +335,13 @@
             }
         });
 
-        // Initialize script logic boots array operations
+        // Configuration action events binding bindings
+        document.getElementById('logRecordBtn').addEventListener('click', saveRecordToHistory);
         document.getElementById('qrType').addEventListener('change', buildForm);
-        window.addEventListener('DOMContentLoaded', buildForm);
+        window.addEventListener('DOMContentLoaded', () => {
+            buildForm();
+            renderHistoryView();
+        });
     </script>
 </body>
 </html>
