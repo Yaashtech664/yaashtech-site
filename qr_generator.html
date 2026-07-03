@@ -3,118 +3,185 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Yaashtech | VCard QR Code Engine</title>
+    <title>Yaashtech | Business Card QR Code Generator</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
+        /* Modern Obsidian Black Core Overrides */
         body {
             background-color: #000000;
             color: #a0aab2;
-            line-height: 1.6;
         }
-
-        header {
-            background-color: #000000;
-            border-bottom: 1px solid #111111;
-            padding: 10px 5%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .brand-container { display: flex; align-items: center; gap: 12px; }
-        .brand-logo { width: 90px; height: 90px; object-fit: contain; display: block; }
-        .brand-name { color: #ffffff; font-size: 26px; font-weight: 700; }
-        .brand-name span { color: #00dcff; }
-        
-        .top-menu { display: flex; gap: 25px; align-items: center; }
-        .menu-link { color: #ffffff; text-decoration: none; font-weight: 700; font-size: 15px; }
-        .menu-link:hover { color: #00dcff; }
-        .menu-link.active-link { color: #00dcff; border-bottom: 2px solid #00dcff; padding-bottom: 4px; }
-
-        .container { max-width: 600px; margin: 50px auto; padding: 0 5%; text-align: center; }
-        .back-link { display: inline-block; color: #00dcff; text-decoration: none; font-weight: 700; margin-bottom: 20px; text-align: left; width: 100%; }
-        
-        h1 { color: #ffffff; font-size: 36px; margin-bottom: 10px; font-weight: 800; }
-        .subtitle { color: #94a3b8; margin-bottom: 40px; }
-
-        .qr-card {
-            background-color: #050505;
-            border: 1px dashed #00dcff;
-            border-radius: 14px;
-            padding: 40px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 25px;
-        }
-
-        /* Standardized High Contrast Digital QR Container */
-        .qr-output-frame {
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 10px;
-            display: inline-block;
-        }
-
-        .qr-output-frame img {
-            display: block;
-            width: 200px;
-            height: 200px;
-        }
-
-        .btn-action {
-            display: inline-block;
-            background-color: #111111;
-            color: #ffffff;
-            text-decoration: none;
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-weight: 700;
-            border: 1px solid #222222;
-            transition: color 0.2s, border-color 0.2s;
-        }
-
-        .btn-action:hover {
-            color: #00dcff;
-            border-color: #00dcff;
+        /* Custom input focus rules matching your electric cyan aesthetic */
+        .focus-cyan:focus {
+            border-color: #00dcff !important;
+            box-shadow: 0 0 0 2px rgba(0, 220, 255, 0.2) !important;
         }
     </style>
 </head>
-<body>
+<body class="font-sans min-h-screen pb-10">
 
-    <header>
-        <div class="brand-container">
-            <img class="brand-logo" src="logo.png" alt="Yaashtech Logo">
-            <div class="brand-name">Yaash<span>tech</span></div>
+    <header class="bg-black border-b border-zinc-900 px-[5%] py-2.5 flex flex-col md:flex-row justify-between items-center sticky top-0 z-50 gap-4 md:gap-0">
+        <div class="flex items-center gap-3">
+            <img class="w-[90px] h-[90px] object-contain block" src="logo.png" alt="Yaashtech Logo">
+            <div class="text-white text-26px font-bold tracking-[0.5px]">Yaash<span class="text-[#00dcff]">tech</span></div>
         </div>
-        <nav class="top-menu">
-            <a href="index.html" class="menu-link">Home</a>
-            <a href="laptop_service.html" class="menu-link">Laptop Repair</a>
-            <a href="qr_generator.html" class="menu-link active-link">QR Generator</a>
-            <a href="#" class="menu-link" style="opacity: 0.4; cursor: not-allowed;">Logistics</a>
+        <nav class="flex gap-6 items-center">
+            <a href="index.html" class="text-white hover:text-[#00dcff] font-bold text-[15px] tracking-[0.5px] transition-colors">Home</a>
+            <a href="laptop_service.html" class="text-white hover:text-[#00dcff] font-bold text-[15px] tracking-[0.5px] transition-colors">Laptop Repair</a>
+            <a href="qr_generator.html" class="text-[#00dcff] font-bold text-[15px] tracking-[0.5px] border-b-2 border-[#00dcff] pb-1 transition-colors">QR Generator</a>
+            <a href="#" class="text-white font-bold text-[15px] tracking-[0.5px] opacity-40 cursor-not-allowed">Logistics</a>
         </nav>
     </header>
 
-    <div class="container">
-        <a href="index.html" class="back-link">← Return to Control Hub</a>
-        <h1>VCard QR Contact Card</h1>
-        <p class="subtitle">Scan the vector framework below with any mobile camera smartphone to import the verified Yaashtech business profile instantly.</p>
+    <div class="max-w-5xl mx-auto mt-10 bg-zinc-950 rounded-2xl border border-zinc-900 overflow-hidden shadow-xl">
+        
+        <div class="bg-gradient-to-r from-zinc-900 to-black text-white p-6 text-center border-b border-zinc-900">
+            <h1 class="text-2xl font-bold tracking-tight">Business Card QR Code Generator</h1>
+            <p class="text-[#00dcff] text-sm mt-1">Dynamic real-time QR creation for Contact vCards and WhatsApp Links</p>
+        </div>
 
-        <div class="qr-card">
-            <div class="qr-output-frame">
-                <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=BEGIN%3AVCARD%0AVERSION%3A3.0%0AN%3AUdhayakumar%3BS.%0AORG%3AYaashtech%20Laptop%20Services%0ATEL%3BTYPE%3DCELL%3A%2B919080106508%0AEMAIL%3Budhayam1794%40gmail.com%0AURL%3BTYPE%3DWORK%3Ahttps%3A%2F%2Fyaashtech.in%0AADR%3BTYPE%3DWORK%3A%3B%3BFlat%20No%20S1%2C%20May%20Flower%20Apartment%2C%20VGN%20Avenue%2CKumananchavadi%2CChennai%3BTamil%20Nadu%3B600056%3BIndia%0AEND%3AVCARD" alt="Yaashtech Contact VCard QR Code">
-            </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 p-6 md:p-8">
             
-            <p style="font-size: 14px; color: #64748b;">Includes: Tech Support Line, Service Drop-off Address, Email, and Official Domain Routing Mapping Links.</p>
-            <a href="index.html" class="btn-action">Return to Hub Console</a>
+            <div class="space-y-6">
+                <div>
+                    <label class="block text-sm font-semibold text-zinc-300 mb-2">Select QR Code Type</label>
+                    <select id="qrType" class="w-full bg-black text-white border border-zinc-800 rounded-lg p-2.5 shadow-sm focus:ring-2 focus:ring-[#00dcff] focus:border-[#00dcff] transition-all outline-none">
+                        <option value="vcard">Save Contact (Professional vCard)</option>
+                        <option value="whatsapp">Direct WhatsApp Chat Link</option>
+                    </select>
+                </div>
+
+                <hr class="border-zinc-900">
+
+                <div id="formFields" class="space-y-4">
+                    </div>
+            </div>
+
+            <div class="flex flex-col items-center justify-center bg-black rounded-xl p-6 border border-dashed border-zinc-800 min-h-[400px]">
+                <span class="text-xs font-bold uppercase tracking-wider text-[#00dcff] mb-4">Live Preview Scan Test</span>
+                
+                <div id="qrcode" class="bg-white p-4 rounded-xl shadow-md border border-zinc-200 inline-block"></div>
+                
+                <div class="mt-6 text-center w-full max-w-sm">
+                    <p id="qrStatusLabel" class="text-xs font-medium text-zinc-400 mb-2 uppercase tracking-wide">Data Encoded:</p>
+                    <textarea id="rawPayload" readonly class="w-full text-xs font-mono bg-zinc-950 border border-zinc-900 rounded-md p-2 h-24 resize-none focus:outline-none text-zinc-500"></textarea>
+                </div>
+                
+                <button id="downloadBtn" class="mt-4 bg-[#00dcff] hover:bg-[#00b2cc] text-black font-bold text-sm py-2.5 px-5 rounded-lg transition-all flex items-center gap-2 cursor-pointer shadow-md">
+                    📥 Download QR Image
+                </button>
+            </div>
+
         </div>
     </div>
 
+    <script>
+        let qrContainer = document.getElementById("qrcode");
+        let qrCodeInstance = null;
+
+        // Structured templates for local field mapping inputs
+        const fieldTemplates = {
+            vcard: [
+                { id: 'name', label: 'Full Name', value: 'Iyyanar', placeholder: 'e.g., Iyyanar' },
+                { id: 'title', label: 'Job Title / Designation', value: 'Managing Director', placeholder: 'e.g., Managing Director' },
+                { id: 'company', label: 'Company Name', value: 'Bullet Trans Solutions Private Limited', placeholder: 'e.g., Bullet Trans' },
+                { id: 'phone', label: 'Mobile Number (With Country Code)', value: '+919344590431', placeholder: 'e.g., +919344590431' },
+                { id: 'email', label: 'Email Address', value: 'Iyyanar@bullettrans.in', placeholder: 'e.g., name@domain.com' },
+                { id: 'address', label: 'Office Address', value: 'No.112/B, P H Road, Velappanchavadi, Chennai', placeholder: 'Street, City' },
+                { id: 'pincode', label: 'Pin Code', value: '600077', placeholder: '600077' }
+            ],
+            whatsapp: [
+                { id: 'waPhone', label: 'WhatsApp Phone Number (Numbers only with country code)', value: '919344590431', placeholder: 'e.g., 919344590431' },
+                { id: 'waMessage', label: 'Default Pre-filled Message Text', value: 'Hello Sir, I would like to enquire about your logistics and transport services.', placeholder: 'Type custom text...' }
+            ]
+        };
+
+        // Standard functional form inputs element insertion engine
+        function buildForm() {
+            const type = document.getElementById('qrType').value;
+            const container = document.getElementById('formFields');
+            container.innerHTML = '';
+
+            fieldTemplates[type].forEach(field => {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'flex flex-col';
+                
+                wrapper.innerHTML = `
+                    <label class="text-xs font-semibold text-zinc-400 mb-1">${field.label}</label>
+                    <input type="text" id="${field.id}" value="${field.value}" placeholder="${field.placeholder}" 
+                           class="w-full bg-black text-white border border-zinc-800 rounded-lg p-2 text-sm focus:outline-none transition-all focus:border-[#00dcff] input-trigger focus-cyan">
+                `;
+                container.appendChild(wrapper);
+            });
+
+            // Bind listeners across dynamic trigger array loops
+            document.querySelectorAll('.input-trigger').forEach(input => {
+                input.addEventListener('input', generateQRCode);
+            });
+
+            generateQRCode();
+        }
+
+        // Processing payload and injects frame image strings onto the wrapper shell matrix
+        function generateQRCode() {
+            const type = document.getElementById('qrType').value;
+            let finalPayload = "";
+
+            if (type === 'vcard') {
+                const name = document.getElementById('name').value;
+                const title = document.getElementById('title').value;
+                const company = document.getElementById('company').value;
+                const phone = document.getElementById('phone').value;
+                const email = document.getElementById('email').value;
+                const address = document.getElementById('address').value;
+                const pincode = document.getElementById('pincode').value;
+
+                // Build standardized vCard contact profile layout block strings
+                finalPayload = `BEGIN:VCARD\nVERSION:3.0\nN:${name};;;;\nFN:${name}\nORG:${company}\nTITLE:${title}\nTEL;TYPE=CELL,VOICE:${phone}\nEMAIL;TYPE=PREF,INTERNET:${email}\nADR;TYPE=WORK:;;${address};;;${pincode};India\nEND:VCARD`;
+                document.getElementById('qrStatusLabel').innerText = "Raw vCard Contact Payload:";
+            } else {
+                const waPhone = document.getElementById('waPhone').value.replace(/[^0-9]/g, '');
+                const waMessage = encodeURIComponent(document.getElementById('waMessage').value);
+                
+                // Build standardized WhatsApp communication parameters string links
+                finalPayload = `https://wa.me/${waPhone}?text=${waMessage}`;
+                document.getElementById('qrStatusLabel').innerText = "Direct WhatsApp Target URL:";
+            }
+
+            // Injects visual parameters debugging logs text panel values
+            document.getElementById('rawPayload').value = finalPayload;
+
+            // Wipes existing image node elements clean before running canvas calculations
+            qrContainer.innerHTML = "";
+
+            // Re-render layout execution engine tracking object values
+            qrCodeInstance = new QRCode(qrContainer, {
+                text: finalPayload,
+                width: 200,
+                height: 200,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
+            });
+        }
+
+        // Image file output rendering and click stream downloads handling logic
+        document.getElementById('downloadBtn').addEventListener('click', () => {
+            const img = qrContainer.querySelector('img');
+            if (img) {
+                const link = document.createElement('a');
+                link.download = `QR_Code_${document.getElementById('qrType').value}.png`;
+                link.href = img.src;
+                link.click();
+            } else {
+                alert("Please wait for the QR code to finish rendering before downloading.");
+            }
+        });
+
+        // Initialize script logic boots array operations
+        document.getElementById('qrType').addEventListener('change', buildForm);
+        window.addEventListener('DOMContentLoaded', buildForm);
+    </script>
 </body>
 </html>
