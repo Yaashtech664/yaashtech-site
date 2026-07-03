@@ -3,64 +3,137 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Yaashtech | Central Operations Center</title>
+    <title>Yaashtech | System Administration Hub</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <style>
         body { background-color: #000000; color: #a0aab2; }
+        .nav-ribbon-btn.active { background-color: #00dcff; color: #000000; font-weight: 700; }
     </style>
 </head>
 <body class="font-sans min-h-screen flex flex-col justify-between">
 
-    <header class="bg-black border-b border-zinc-900 px-[5%] py-2.5 flex justify-between items-center sticky top-0 z-50">
+    <header class="bg-black border-b border-zinc-900 px-6 py-3 flex justify-between items-center sticky top-0 z-50">
         <div class="flex items-center gap-3">
-            <img class="w-[90px] h-[90px] object-contain" src="logo.png" alt="Yaashtech Logo">
-            <div class="text-white text-[26px] font-bold tracking-[0.5px]">Yaash<span class="text-[#00dcff]">tech</span></div>
+            <div class="text-white text-2xl font-black tracking-wide">Yaash<span class="text-[#00dcff]">tech</span></div>
+            <span class="text-[10px] font-bold tracking-widest uppercase bg-zinc-900 border border-zinc-800 text-[#00dcff] px-2 py-0.5 rounded-md">Console Core v4.0</span>
         </div>
-        <nav class="flex gap-6 items-center">
-            <a href="dashboard.html" class="text-[#00dcff] font-bold text-[15px] border-b-2 border-[#00dcff] pb-1">Dashboard Hub</a>
-            <a href="qr_generator.html" class="text-white hover:text-[#00dcff] font-bold text-[15px] transition-colors">QR Generator</a>
-            <a href="#" class="text-zinc-600 font-bold text-[15px] cursor-not-allowed opacity-40">📦 Logistics (Future)</a>
-            <button onclick="logoutSession()" class="text-red-400 hover:text-red-500 font-bold text-[14px] ml-4 cursor-pointer">Lock & Exit</button>
-        </nav>
+        <div class="flex items-center gap-4">
+            <span id="displayUserIdentity" class="text-xs font-semibold text-zinc-400">Profile: Admin</span>
+            <button onclick="triggerTerminalLogout()" class="text-xs font-bold text-red-400 hover:text-red-500 bg-zinc-950 border border-zinc-900 hover:border-red-900 px-3 py-1.5 rounded-lg transition-all cursor-pointer">
+                Exit Core Terminal ✕
+            </button>
+        </div>
     </header>
 
-    <main class="max-w-5xl mx-auto my-16 px-4 flex-1 w-full text-center space-y-6">
-        <div>
-            <span class="text-[11px] font-bold uppercase tracking-widest bg-zinc-900 text-[#00dcff] border border-zinc-800 px-3 py-1 rounded-full">Secure Session Validated</span>
-            <h1 class="text-white text-4xl font-black tracking-tight mt-4">Welcome to the Operations Hub</h1>
-            <p class="text-zinc-400 text-sm max-w-md mx-auto mt-2">Select an internal module from your top navigation toolbar to initialize active tools configurations.</p>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto pt-6 text-left">
-            <div class="bg-zinc-950 border border-zinc-900 p-6 rounded-xl space-y-3">
-                <span class="text-2xl">🔳</span>
-                <h3 class="text-white font-bold text-lg">Contact QR Generator Engine</h3>
-                <p class="text-zinc-500 text-xs">Run high-capacity, local data multi-line vCard generations alongside separate file backup matrices logs.</p>
-                <a href="qr_generator.html" class="text-[#00dcff] text-xs font-bold block pt-2 hover:underline">Launch Tool Dashboard →</a>
+    <div class="flex flex-1 w-full relative">
+        
+        <aside class="w-64 bg-zinc-950 border-r border-zinc-900 p-4 flex flex-col justify-between space-y-4 shrink-0">
+            <div class="space-y-1">
+                <span class="text-[10px] font-black uppercase tracking-wider text-zinc-500 block px-3 mb-2">Systems Modules Navigation</span>
+                
+                <button onclick="routeWorkspaceView('laptop_service.html', this)" class="nav-ribbon-btn w-full text-left text-sm font-medium text-zinc-300 hover:text-white hover:bg-zinc-900 px-3 py-2.5 rounded-xl transition-all flex items-center gap-3 cursor-pointer">
+                    🛠️ Laptop Repair Hub
+                </button>
+                <button onclick="routeWorkspaceView('qr_generator.html', this)" class="nav-ribbon-btn w-full text-left text-sm font-medium text-zinc-300 hover:text-white hover:bg-zinc-900 px-3 py-2.5 rounded-xl transition-all flex items-center gap-3 cursor-pointer">
+                    🔳 QR Generator Engine
+                </button>
+                <button onclick="loadAuditHistoryLogsView(this)" class="nav-ribbon-btn w-full text-left text-sm font-medium text-zinc-300 hover:text-white hover:bg-zinc-900 px-3 py-2.5 rounded-xl transition-all flex items-center gap-3 cursor-pointer">
+                    📜 Session Audit Logs
+                </button>
+                
+                <hr class="border-zinc-900 my-2">
+                
+                <button class="w-full text-left text-sm font-medium text-zinc-600 opacity-40 px-3 py-2.5 flex items-center gap-3 cursor-not-allowed" disabled>
+                    📦 Logistics / Operations
+                </button>
             </div>
 
-            <div class="bg-zinc-950 border border-zinc-900 p-6 rounded-xl space-y-3 opacity-50 border-dashed">
-                <span class="text-2xl">📦</span>
-                <h3 class="text-zinc-400 font-bold text-lg">Logistics & Supply Routing</h3>
-                <p class="text-zinc-600 text-xs">Supply lines routing management, transaction orders frameworks, and tracking manifests indicators. Locked under future development blocks.</p>
-                <span class="text-zinc-600 text-xs font-bold block pt-2 cursor-not-allowed">⚠️ Under Active Construction</span>
+            <div class="p-3 bg-zinc-900/40 border border-zinc-900 rounded-xl text-[11px] text-zinc-500">
+                ⚡ <span class="font-bold text-zinc-400">Open-Source Shield:</span> Local sandboxed local storage structure active. Zero external dependencies.
             </div>
-        </div>
-    </main>
+        </aside>
 
-    <footer class="bg-zinc-950 border-t border-zinc-900 text-center py-5 text-xs text-zinc-600">
-        Active Security Firewall Monitor Running. Managed by Admin.
-    </footer>
+        <main class="flex-1 min-w-0 bg-black relative flex flex-col">
+            <iframe id="workspaceFrameTarget" class="w-full h-full border-0 hidden flex-1"></iframe>
+            
+            <div id="defaultWelcomePlaceholderBox" class="p-12 max-w-2xl mx-auto my-auto text-center space-y-4">
+                <span class="text-3xl">🎛️</span>
+                <h1 class="text-white text-3xl font-black tracking-tight">Technical Operations Dashboard</h1>
+                <p class="text-zinc-400 text-sm">Select a module target component from your left sidebar ribbon terminal menu to fetch separate standalone frame panels.</p>
+            </div>
+
+            <div id="auditLogsViewerPanel" class="p-8 hidden max-w-4xl w-full mx-auto space-y-4 overflow-y-auto max-h-[80vh]">
+                <h2 class="text-white font-bold text-lg border-b border-zinc-900 pb-2">📜 Core Access Audit History Records</h2>
+                <div id="logsTargetRowGrid" class="space-y-2 text-xs font-mono text-left"></div>
+            </div>
+        </main>
+
+    </div>
 
     <script>
-        // Secure Route Guard Verification Block Check
         if (localStorage.getItem("yaashtech_session") !== "authenticated_token_active") {
-            window.location.href = "login.html"; // Rejects unauthenticated traffic instantly
+            window.location.href = "login.html";
         }
 
-        function logoutSession() {
+        document.getElementById('displayUserIdentity').innerText = "User ID: " + localStorage.getItem("yt_admin_user");
+
+        // Advanced Decoupled Architecture Router System
+        function routeWorkspaceView(htmlPageFileName, elementReferenceNode) {
+            // Drop view styles state variables
+            document.querySelectorAll('.nav-ribbon-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById('defaultWelcomePlaceholderBox').classList.add('hidden');
+            document.getElementById('auditLogsViewerPanel').classList.add('hidden');
+            
+            // Render frame target files
+            const iframe = document.getElementById('workspaceFrameTarget');
+            iframe.src = htmlPageFileName;
+            iframe.classList.remove('hidden');
+            
+            elementReferenceNode.classList.add('active');
+        }
+
+        function loadAuditHistoryLogsView(elementReferenceNode) {
+            document.querySelectorAll('.nav-ribbon-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById('defaultWelcomePlaceholderBox').classList.add('hidden');
+            document.getElementById('workspaceFrameTarget').classList.add('hidden');
+            
+            const targetGrid = document.getElementById('logsTargetRowGrid');
+            targetGrid.innerHTML = "";
+            
+            const rawLogs = JSON.parse(localStorage.getItem("yt_login_logs")) || [];
+            if(rawLogs.length === 0) {
+                targetGrid.innerHTML = `<p class="text-zinc-600 italic">No access logging metrics registered inside browser tables yet.</p>`;
+            } else {
+                rawLogs.forEach(log => {
+                    const row = document.createElement('div');
+                    row.className = "p-2.5 rounded-lg border bg-zinc-950 border-zinc-900 flex justify-between";
+                    row.innerHTML = `
+                        <span class="text-zinc-500">[${log.timestamp}]</span>
+                        <span class="text-zinc-300 font-bold">User: "${log.user}"</span>
+                        <span class="${log.event.includes('SUCCESS')?'text-emerald-400':'text-red-400'} font-bold">${log.event}</span>
+                    `;
+                    targetGrid.appendChild(row);
+                });
+            }
+            
+            document.getElementById('auditLogsViewerPanel').classList.remove('hidden');
+            elementReferenceNode.classList.add('active');
+        }
+
+        function triggerTerminalLogout() {
+            pushAuditLog(localStorage.getItem("yt_admin_user"), "TERMINAL_LOGOUT_FLOW_COMPLETED");
             localStorage.removeItem("yaashtech_session");
-            window.location.href = "index.html";
+            window.location.href = "index.html"; // Ends access loop entirely and jumps to public front
+        }
+
+        function pushAuditLog(userId, status) {
+            let logs = JSON.parse(localStorage.getItem("yt_login_logs")) || [];
+            logs.unshift({
+                timestamp: new Date().toLocaleString(),
+                user: userId,
+                event: status
+            });
+            localStorage.setItem("yt_login_logs", JSON.stringify(logs));
         }
     </script>
 </body>
