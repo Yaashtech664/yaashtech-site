@@ -7,51 +7,182 @@
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <style>
         body { background-color: #000000; color: #a0aab2; }
+        .focus-cyan:focus {
+            border-color: #00dcff !important;
+            box-shadow: 0 0 0 2px rgba(0, 220, 255, 0.2) !important;
+        }
     </style>
 </head>
 <body class="font-sans min-h-screen flex flex-col justify-center items-center px-4">
 
-    <div class="w-full max-w-md bg-zinc-950 border border-zinc-900 rounded-2xl p-8 shadow-2xl space-y-6">
+    <div id="loginBox" class="w-full max-w-md bg-zinc-950 border border-zinc-900 rounded-2xl p-8 shadow-2xl space-y-6">
         <div class="text-center">
-            <img class="w-20 h-20 mx-auto object-contain mb-3" src="logo.png" alt="Yaashtech Logo">
             <h2 class="text-white font-black text-2xl tracking-tight">Internal Portal Gate</h2>
-            <p class="text-zinc-500 text-xs mt-1">Authenticate identity credentials to access active master database logs.</p>
+            <p class="text-zinc-500 text-xs mt-1">Authenticate identity credentials to access the active dashboard.</p>
         </div>
 
         <form id="loginForm" class="space-y-4">
             <div class="flex flex-col">
                 <label class="text-xs font-bold text-zinc-400 mb-1">👤 Administrator Username</label>
-                <input type="text" id="username" placeholder="Enter username" required class="w-full bg-black text-white border border-zinc-800 rounded-lg p-2.5 text-sm focus:outline-none focus:border-[#00dcff] transition-all">
+                <input type="text" id="username" placeholder="Enter username (default: admin)" required class="w-full bg-black text-white border border-zinc-800 rounded-lg p-2.5 text-sm focus:outline-none focus-cyan transition-all">
             </div>
             <div class="flex flex-col">
                 <label class="text-xs font-bold text-zinc-400 mb-1">🔑 Security Access Password</label>
-                <input type="password" id="password" placeholder="Enter password" required class="w-full bg-black text-white border border-zinc-800 rounded-lg p-2.5 text-sm focus:outline-none focus:border-[#00dcff] transition-all">
+                <input type="password" id="password" placeholder="Enter password (default: yaashtech664)" required class="w-full bg-black text-white border border-zinc-800 rounded-lg p-2.5 text-sm focus:outline-none focus-cyan transition-all">
             </div>
-            <div id="errorMsg" class="text-xs font-bold text-red-400 hidden text-center">❌ Invalid credentials identifier. Try again.</div>
+            <div id="loginErrorMsg" class="text-xs font-bold text-red-400 hidden text-center">❌ Invalid credentials combination.</div>
+            
             <button type="submit" class="w-full bg-[#00dcff] hover:bg-[#00b2cc] text-black font-extrabold text-sm py-2.5 px-4 rounded-lg shadow-md transition-colors cursor-pointer">
                 Unlock Hub Access
             </button>
         </form>
         
-        <div class="text-center">
+        <div class="flex justify-between items-center text-xs pt-2">
+            <button onclick="toggleAuthBox('forgotBox')" class="text-[#00dcff] hover:underline cursor-pointer">Forgot Password?</button>
+            <button onclick="toggleAuthBox('registerBox')" class="text-zinc-400 hover:text-white transition-colors cursor-pointer">Register Account</button>
+        </div>
+        <div class="text-center pt-2 border-t border-zinc-900">
             <a href="index.html" class="text-xs text-zinc-500 hover:text-white transition-colors">← Abort & Return Home</a>
         </div>
     </div>
 
+    <div id="registerBox" class="w-full max-w-md bg-zinc-950 border border-zinc-900 rounded-2xl p-8 shadow-2xl space-y-6 hidden">
+        <div class="text-center">
+            <h2 class="text-white font-black text-2xl tracking-tight">Register Admin Profile</h2>
+            <p class="text-zinc-500 text-xs mt-1">Configure your personal username, password, and mobile recovery metrics.</p>
+        </div>
+
+        <form id="registerForm" class="space-y-4">
+            <div class="flex flex-col">
+                <label class="text-xs font-bold text-zinc-400 mb-1">👤 Select Username</label>
+                <input type="text" id="regUser" placeholder="e.g., admin" required class="w-full bg-black text-white border border-zinc-800 rounded-lg p-2.5 text-sm focus:outline-none focus-cyan transition-all">
+            </div>
+            <div class="flex flex-col">
+                <label class="text-xs font-bold text-zinc-400 mb-1">📱 Registered Mobile Number (For Recovery)</label>
+                <input type="text" id="regPhone" placeholder="e.g., 9080106508" required class="w-full bg-black text-white border border-zinc-800 rounded-lg p-2.5 text-sm focus:outline-none focus-cyan transition-all">
+            </div>
+            <div class="flex flex-col">
+                <label class="text-xs font-bold text-zinc-400 mb-1">🔑 Choose Secure Password</label>
+                <input type="password" id="regPass" placeholder="Enter password" required class="w-full bg-black text-white border border-zinc-800 rounded-lg p-2.5 text-sm focus:outline-none focus-cyan transition-all">
+            </div>
+            <button type="submit" class="w-full bg-[#00dcff] hover:bg-[#00b2cc] text-black font-extrabold text-sm py-2.5 px-4 rounded-lg shadow-md transition-colors cursor-pointer">
+                Register Profile
+            </button>
+        </form>
+        <div class="text-center">
+            <button onclick="toggleAuthBox('loginBox')" class="text-xs text-zinc-500 hover:text-white transition-colors cursor-pointer">← Back to Login</button>
+        </div>
+    </div>
+
+    <div id="forgotBox" class="w-full max-w-md bg-zinc-950 border border-zinc-900 rounded-2xl p-8 shadow-2xl space-y-6 hidden">
+        <div class="text-center">
+            <h2 class="text-white font-black text-2xl tracking-tight">Identity Recovery Engine</h2>
+            <p class="text-zinc-500 text-xs mt-1">Verify ownership using your registered mobile phone line.</p>
+        </div>
+
+        <div id="stepPhone" class="space-y-4">
+            <div class="flex flex-col">
+                <label class="text-xs font-bold text-zinc-400 mb-1">📱 Enter Registered Mobile Number</label>
+                <input type="text" id="verifyPhone" placeholder="e.g., 9080106508" class="w-full bg-black text-white border border-zinc-800 rounded-lg p-2.5 text-sm focus:outline-none focus-cyan transition-all">
+            </div>
+            <div id="recoveryErrorMsg" class="text-xs font-bold text-red-400 hidden text-center">❌ Mobile signature trace not found in local database.</div>
+            <button onclick="runPhoneVerification()" class="w-full bg-[#00dcff] hover:bg-[#00b2cc] text-black font-extrabold text-sm py-2.5 px-4 rounded-lg shadow-md transition-colors cursor-pointer">
+                Verify Mobile Signature
+            </button>
+        </div>
+
+        <div id="stepReset" class="space-y-4 hidden">
+            <div class="p-3 bg-zinc-900 text-xs text-emerald-400 rounded-lg border border-zinc-800 font-medium">
+                ✅ Phone line validated. Configure your new password override parameters below.
+            </div>
+            <div class="flex flex-col">
+                <label class="text-xs font-bold text-zinc-400 mb-1">🔑 Set New Secure Password</label>
+                <input type="password" id="newPassword" placeholder="Minimum 4 characters" class="w-full bg-black text-white border border-zinc-800 rounded-lg p-2.5 text-sm focus:outline-none focus-cyan transition-all">
+            </div>
+            <button onclick="commitNewPassword()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-black font-extrabold text-sm py-2.5 px-4 rounded-lg shadow-md transition-colors cursor-pointer">
+                Overwrite Security Credentials
+            </button>
+        </div>
+
+        <div class="text-center">
+            <button onclick="resetRecoveryBox()" class="text-xs text-zinc-500 hover:text-white transition-colors cursor-pointer">← Back to Login</button>
+        </div>
+    </div>
+
     <script>
+        // Seed database credentials if empty
+        if (!localStorage.getItem("yt_admin_user")) {
+            localStorage.setItem("yt_admin_user", "admin");
+            localStorage.setItem("yt_admin_phone", "9080106508");
+            localStorage.setItem("yt_admin_pass", "yaashtech664");
+        }
+        if (!localStorage.getItem("yt_login_logs")) {
+            localStorage.setItem("yt_login_logs", JSON.stringify([]));
+        }
+
+        function toggleAuthBox(targetId) {
+            document.getElementById('loginBox').classList.add('hidden');
+            document.getElementById('registerBox').classList.add('hidden');
+            document.getElementById('forgotBox').classList.add('hidden');
+            document.getElementById(targetId).classList.remove('hidden');
+        }
+
+        function resetRecoveryBox() {
+            document.getElementById('stepPhone').classList.remove('hidden');
+            document.getElementById('stepReset').classList.add('hidden');
+            document.getElementById('recoveryErrorMsg').classList.add('hidden');
+            document.getElementById('verifyPhone').value = "";
+            document.getElementById('newPassword').value = "";
+            toggleAuthBox('loginBox');
+        }
+
+        function logEvent(userId, status) {
+            let logs = JSON.parse(localStorage.getItem("yt_login_logs")) || [];
+            logs.unshift({ timestamp: new Date().toLocaleString(), user: userId, event: status });
+            localStorage.setItem("yt_login_logs", JSON.stringify(logs));
+        }
+
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            const user = document.getElementById('username').value;
+            const user = document.getElementById('username').value.trim();
             const pass = document.getElementById('password').value;
-
-            // Setting standard open-source admin credentials (You can change these inside this file anytime)
-            if (user === "admin" && pass === "yaashtech664") {
+            if (user === localStorage.getItem("yt_admin_user") && pass === localStorage.getItem("yt_admin_pass")) {
+                logEvent(user, "SUCCESSFUL_LOGIN");
                 localStorage.setItem("yaashtech_session", "authenticated_token_active");
-                window.location.href = "dashboard.html"; // Safe redirect to the frame
+                window.location.href = "dashboard.html";
             } else {
-                document.getElementById('errorMsg').classList.remove('hidden');
+                logEvent(user, "FAILED_ATTEMPT");
+                document.getElementById('loginErrorMsg').classList.remove('hidden');
             }
         });
+
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            localStorage.setItem("yt_admin_user", document.getElementById('regUser').value.trim());
+            localStorage.setItem("yt_admin_phone", document.getElementById('regPhone').value.trim().replace(/[^0-9]/g, ''));
+            localStorage.setItem("yt_admin_pass", document.getElementById('regPass').value);
+            logEvent(document.getElementById('regUser').value, "PROFILE_REGISTERED");
+            alert("Account registered successfully!");
+            resetRecoveryBox();
+        });
+
+        function runPhoneVerification() {
+            if (document.getElementById('verifyPhone').value.trim().replace(/[^0-9]/g, '') === localStorage.getItem("yt_admin_phone")) {
+                document.getElementById('stepPhone').classList.add('hidden');
+                document.getElementById('stepReset').classList.remove('hidden');
+            } else {
+                document.getElementById('recoveryErrorMsg').classList.remove('hidden');
+            }
+        }
+
+        function commitNewPassword() {
+            const np = document.getElementById('newPassword').value;
+            if(np.length < 4) { alert("Must be 4+ characters!"); return; }
+            localStorage.setItem("yt_admin_pass", np);
+            logEvent(localStorage.getItem("yt_admin_user"), "PASSWORD_RESET_SUCCESS");
+            alert("Password updated!");
+            resetRecoveryBox();
+        }
     </script>
 </body>
 </html>
